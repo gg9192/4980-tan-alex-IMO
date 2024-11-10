@@ -240,6 +240,15 @@ proof -
   qed
   have square_both_sides: "(?A + ?B + ?C)^2  = 3 * ((4 * ?B * ?C) - (?B + ?C - ?A)\<^sup>2)" using sq1 pos
     by simp
+  have dist_lhs: "(?A + ?B + ?C)^2 = ?A^2 + ?B^2 + ?C ^2 + 2 * ?A * ?B + 2 * ?B * ?C + 2 * ?A * ?C"
+    by algebra
+  then have a1: "?A^2 + ?B^2 + ?C ^2 + 2 * ?A * ?B + 2 * ?B * ?C + 2 * ?A * ?C  = 3 * ((4 * ?B * ?C) - (?B + ?C - ?A)\<^sup>2)" 
+    using square_both_sides dist_lhs 
+    by algebra
+  have dist_rhs: "3 * ((4 * ?B * ?C) - (?B + ?C - ?A)\<^sup>2) = 6 * ?A * ?B + 6 * ?B * ?C + 6 * ?A * ?C - (3 * ?A ^2) - (3 * ?B ^ 2) - (3 * ?C ^ 2)"
+    by algebra
+  have fully_expanded: "?A^2 + ?B^2 + ?C ^2 + 2 * ?A * ?B + 2 * ?B * ?C + 2 * ?A * ?C = 6 * ?A * ?B + 6 * ?B * ?C + 6 * ?A * ?C - (3 * ?A ^2) - (3 * ?B ^ 2) - (3 * ?C ^ 2)"
+    using a1 dist_rhs by presburger
     
   show ?thesis sorry
 qed
