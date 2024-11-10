@@ -88,7 +88,19 @@ proof -
     show ?thesis using d1 numbers
       by (metis (no_types, opaque_lifting) mult.commute mult_1 real_sqrt_mult)
   qed
+  let ?A = "a^2"
+  let ?B = "b^2"
+  let ?C = "c^2"
+  have amgm1: "(?A^2 + ?B^2) / 2 \<ge> ?A * ?B"
+    using arith_geo_mean power_mult_distrib zero_le_power2 by blast
+  have amgm2: "(?B^2 + ?C^2) / 2 \<ge> ?B * ?C"
+    by (meson arith_geo_mean power_mult_distrib zero_le_power2)
+  have amgm3: "(?C^2 + ?A^2) / 2 \<ge> ?C * ?A "
+    using arith_geo_mean power_mult_distrib zero_le_power2 by blast
+  have laststep: "((?A^2 + ?B^2) / 2) + ((?B^2 + ?C^2) / 2) + ((?C^2 + ?A^2) / 2)\<ge> ?A * ?B + ?B * ?C + ?C * ?A" using amgm1 amgm2 amgm3
+    by argo
     
+     
   show ?thesis sorry
 qed
 
