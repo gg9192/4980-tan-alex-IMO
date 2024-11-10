@@ -13,8 +13,7 @@ lemma IMO1961p2:
   shows "(a^2) + (b^2) + (c^2) \<ge> 4 * s * (sqrt 3)"
   using assms
 proof -
-  
-  have "S = sqrt (((a + b + c)/2)*((-a + b + c)/2)*((a - b + c)/2)*((a + b - c)/2))"
+  have heron:"S = sqrt (((a + b + c)/2)*((-a + b + c)/2)*((a - b + c)/2)*((a + b - c)/2))"
   proof - 
     have heron1: "S = sqrt (s * (s - a) * (s - b) * (s - c))" 
       using heron assms(1-5) by blast
@@ -34,11 +33,21 @@ proof -
         using f4 f3 assms(5) heron1 by presburger
     qed
   qed 
-  
-    (*     have a4: "((a + - b + c) / 2) = ((a - b + c) / 2)"
-      by force *)
+  have factor: "S = (1/4) * sqrt ((a + b + c)*(-a + b + c)*(a - b + c)*(a + b - c))" 
+  proof -
+    have fac1: "S = sqrt ((1/16)*((a + b + c)*(-a + b + c)*(a - b + c)*(a + b - c)))"
+      using local.heron by auto 
+    then have mult: "sqrt ((1/16)*((a + b + c)*(-a + b + c)*(a - b + c)*(a + b - c))) = sqrt (1/16) * sqrt ((a + b + c)*(-a + b + c)*(a - b + c)*(a + b - c)) "
+      using real_sqrt_mult by blast
+    have simp: "sqrt ((1/16)::real) = ((1/4)::real)"
+      using real_sqrt_divide by fastforce
+    show ?thesis using fac1 mult simp
+      by presburger 
+  qed
+    
   show ?thesis sorry
 qed
+value "1/(4::nat)"
 
 section "equality"
 
