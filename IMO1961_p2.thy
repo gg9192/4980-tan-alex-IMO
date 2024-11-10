@@ -124,15 +124,20 @@ proof -
     proof - 
       have replace:  "sqrt (3 * ((4 * (b ^ 2) * (c ^ 2)) - (b\<^sup>2 + c\<^sup>2 - a\<^sup>2)\<^sup>2)) = sqrt (3 * ((4 * ?B * ?C) - (?B + ?C - ?A)\<^sup>2))"
         by auto
-      
-      show ?thesis sorry
+      have a1:"(?B + ?C - ?A)\<^sup>2 = (?B^2) + 2 * ?B * ?C - 2 * ?A * ?B - 2 * ?A * ?C + (?A^2) + (?C^2)"
+        by algebra
+      have a2: " sqrt (3 * ((4 * ?B * ?C) - (?B + ?C - ?A)\<^sup>2)) =  sqrt (3 * ((4 * ?B * ?C) - ((?B^2) + 2 * ?B * ?C - 2 * ?A * ?B - 2 * ?A * ?C + (?A^2) + (?C^2))))"
+        using a1
+        by presburger 
+      have a3: " sqrt (3 * ((4 * ?B * ?C) - ((?B^2) + 2 * ?B * ?C - 2 * ?A * ?B - 2 * ?A * ?C + (?A^2) + (?C^2)))) =  sqrt (3 * ((4 * ?B * ?C) - (?B^2 + 2 * ?B * ?C - 2 * ?A * ?B - 2 * ?A *?C + ?A^2 + ?C^2)))"
+        by blast
+        show ?thesis using replace a1 a2 a3
+          by argo
     qed
     have a7: "sqrt (3 * (4 * b\<^sup>2 * c\<^sup>2 - (b\<^sup>2 + c\<^sup>2 - a\<^sup>2)\<^sup>2)) \<le> a\<^sup>2 + b\<^sup>2 + c\<^sup>2" using a5 a6
       by linarith
     show ?thesis using a7 rhs
       by presburger
-      
-      
   qed
 qed
 
