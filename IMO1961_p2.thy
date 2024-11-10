@@ -16,7 +16,7 @@ lemma IMO1961p2:
   assumes "c = dist A B"
   assumes "S = content (convex hull {A, B, C})"
   assumes "s = (a + b + c) / 2"
-  shows "(a^2) + (b^2) + (c^2) \<ge> 4 * s * (sqrt 3)"
+  shows "(a^2) + (b^2) + (c^2) \<ge> 4 * S * (sqrt 3)"
   using assms
 proof -
   have heron:"S = sqrt (((a + b + c)/2)*((-a + b + c)/2)*((a - b + c)/2)*((a + b - c)/2))"
@@ -114,7 +114,25 @@ proof -
     have a3: "(?A + ?B + ?C)^2 \<ge>6 * ?A * ?B + 6 * ?B * ?C + 6 *?C * ?A - 3 * ?A^2 - 3 * ?B ^ 2 - 3 * ?C ^ 2"
       using a2 simp_lhs
       by presburger
-    show ?thesis sorry
+    have a4: "sqrt ((?A + ?B + ?C)^2) \<ge> sqrt (6 * ?A * ?B + 6 * ?B * ?C + 6 *?C * ?A - 3 * ?A^2 - 3 * ?B ^ 2 - 3 * ?C ^ 2)"
+      using a3
+      using real_sqrt_le_iff by presburger
+    have a5: "?A + ?B + ?C \<ge> sqrt (6 * ?A * ?B + 6 * ?B * ?C + 6 *?C * ?A - 3 * ?A^2 - 3 * ?B ^ 2 - 3 * ?C ^ 2)"
+      using a4
+      by auto
+    have a6:"sqrt (3 * ((4 * (b ^ 2) * (c ^ 2)) - (b\<^sup>2 + c\<^sup>2 - a\<^sup>2)\<^sup>2)) = sqrt (6 * ?A * ?B + 6 * ?B * ?C + 6 *?C * ?A - 3 * ?A^2 - 3 * ?B ^ 2 - 3 * ?C ^ 2)"
+    proof - 
+      have replace:  "sqrt (3 * ((4 * (b ^ 2) * (c ^ 2)) - (b\<^sup>2 + c\<^sup>2 - a\<^sup>2)\<^sup>2)) = sqrt (3 * ((4 * ?B * ?C) - (?B + ?C - ?A)\<^sup>2))"
+        by auto
+      
+      show ?thesis sorry
+    qed
+    have a7: "sqrt (3 * (4 * b\<^sup>2 * c\<^sup>2 - (b\<^sup>2 + c\<^sup>2 - a\<^sup>2)\<^sup>2)) \<le> a\<^sup>2 + b\<^sup>2 + c\<^sup>2" using a5 a6
+      by linarith
+    show ?thesis using a7 rhs
+      by presburger
+      
+      
   qed
 qed
 
