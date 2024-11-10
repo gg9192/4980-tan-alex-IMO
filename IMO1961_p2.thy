@@ -3,6 +3,12 @@ theory IMO1961_p2
 begin         
 section "proof"
 
+lemma diff_of_squares:
+  fixes a b::real
+  shows "(a-b)*(a+b) = a^2 - b^2 "
+  by (simp add: power2_eq_square square_diff_square_factored)
+    
+
 lemma IMO1961p2:
   fixes A B C :: "real ^ 2"
   assumes "a = dist B C"
@@ -63,9 +69,28 @@ proof -
     show ?thesis using alg1 alg2
       by (simp add: factor)  
   qed
+  have diff_of_squares: "S = (1/4) * sqrt ((4*b^2*c^2)- ((b^2 + c^2-a^2)^2))" 
+  proof - 
+    have s1: "((2 * b * c + b ^ 2 + c ^ 2 - a ^ 2) * (2 * b * c - b ^ 2 - c ^ 2 + a ^ 2)) = (2 * b * c)\<^sup>2 - (b\<^sup>2 + c\<^sup>2 - a\<^sup>2)\<^sup>2"
+      using diff_of_squares[of "2 * b * c" "b^2 + c^2-a^2"] dist
+      by (smt (verit, del_insts) mult.commute)
+    have s2: "(2 * b * c)\<^sup>2 = 4*b^2*c^2"
+      by algebra
+    show ?thesis using s1 s2
+      using dist by presburger
+  qed
+  have rhs: "4*S*(sqrt 3) = sqrt (3 * ((4 * (b ^ 2) * (c ^ 2)) - (b\<^sup>2 + c\<^sup>2 - a\<^sup>2)\<^sup>2))"
+  proof - 
+    have d1: "4 * S * (sqrt 3) = 4 * ((1/4)::real) * sqrt ((4*b^2*c^2)- ((b^2 + c^2-a^2)^2)) * sqrt 3" using dist
+      by (simp add: local.diff_of_squares)    
+    have numbers: " 4 * ((1/4)::real) = 1"
+      by simp
+    show ?thesis using d1 numbers
+      by (metis (no_types, opaque_lifting) mult.commute mult_1 real_sqrt_mult)
+  qed
+    
   show ?thesis sorry
 qed
-value "1/(4::nat)"
 
 section "equality"
 
