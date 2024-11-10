@@ -44,7 +44,25 @@ proof -
     show ?thesis using fac1 mult simp
       by presburger 
   qed
-    
+  have dist: "S = (1/4) * sqrt ((2 * b * c + b ^ 2 + c ^ 2 - a ^ 2) * (2 * b * c - b ^ 2 - c ^ 2 + a ^ 2))"
+  proof -
+    have alg1: "(a + b + c)*(-a + b + c) = (2 * b * c + b ^ 2 + c ^ 2 - a ^ 2)"
+    proof - 
+      have a1: "(a + b + c)*(-a + b + c) = - (a ^ 2) + a * b + a * c - b * a  + b ^ 2 + b * c -a * c + c * b + c^ 2"
+        by (smt (verit, del_insts) combine_common_factor distrib_left mult.commute power2_eq_square)
+      show ?thesis using a1
+        by simp
+    qed
+    have alg2:  "(a - b + c)*(a + b - c) = (2 * b * c - b ^ 2 - c ^ 2 + a ^ 2)"
+    proof -
+      have a1: "(a - b + c)*(a + b - c) = a ^ 2 + a * b - a * c - b * a - b ^ 2 + b * c + c * a + c * b - c ^ 2"
+        by (smt (verit) diff_add_eq diff_diff_eq2 left_diff_distrib power2_eq_square right_diff_distrib)
+      show ?thesis using a1
+        by force
+    qed
+    show ?thesis using alg1 alg2
+      by (simp add: factor)  
+  qed
   show ?thesis sorry
 qed
 value "1/(4::nat)"
