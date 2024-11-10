@@ -142,7 +142,8 @@ qed
 
 section "equality"
 
-lemma IMO1961p2:
+
+lemma IMO1961p2_eq:
   fixes A B C :: "real ^ 2"
   assumes "a = dist B C"
   assumes "b = dist A C" 
@@ -225,6 +226,21 @@ proof -
   let ?A = "a^2"
   let ?B = "b^2"
   let ?C = "c^2"
+  have rewrite: "?A + ?B + ?C  = sqrt (3 * ((4 * ?B * ?C) - (?B + ?C - ?A)\<^sup>2))" 
+    using rhs assms(6)
+    by presburger
+  have sq1: "(?A + ?B + ?C)^2  = (sqrt (3 * ((4 * ?B * ?C) - (?B + ?C - ?A)\<^sup>2)))^2" using rewrite
+    by presburger
+  have pos: "3 * ((4 * ?B * ?C) - (?B + ?C - ?A)\<^sup>2) \<ge> 0"
+  proof - 
+    have all_pos: "?A \<ge> 0 \<and> ?B \<ge> 0 \<and> ?C \<ge> 0" using assms(1-3)
+      by auto
+    show ?thesis using all_pos
+      by (smt (verit) real_sqrt_ge_0_iff rewrite)
+  qed
+  have square_both_sides: "(?A + ?B + ?C)^2  = 3 * ((4 * ?B * ?C) - (?B + ?C - ?A)\<^sup>2)" using sq1 pos
+    by simp
+    
   show ?thesis sorry
 qed
 
