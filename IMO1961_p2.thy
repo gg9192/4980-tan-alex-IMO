@@ -99,9 +99,23 @@ proof -
     using arith_geo_mean power_mult_distrib zero_le_power2 by blast
   have laststep: "((?A^2 + ?B^2) / 2) + ((?B^2 + ?C^2) / 2) + ((?C^2 + ?A^2) / 2)\<ge> ?A * ?B + ?B * ?C + ?C * ?A" using amgm1 amgm2 amgm3
     by argo
+  have last_simp: "?A^2 + ?B^2 + ?C^2\<ge> ?A * ?B + ?B * ?C + ?C * ?A" using laststep
+    by argo
     
-     
-  show ?thesis sorry
+  show ?thesis
+  proof - 
+    have a1: "4 * ?A^2 + 4 * ?B^2 + 4 * ?C^2\<ge> 4 * ?A * ?B + 4 * ?B * ?C + 4 * ?C * ?A" using last_simp  
+      by linarith
+    have a2: "?A^2 + ?B^2 + ?C^2 + 2 * ?A * ?B + 2 * ?B * ?C + 2 * ?C * ?A \<ge> 6 * ?A * ?B + 6 * ?B * ?C + 6 *?C * ?A - 3 * ?A^2 - 3 * ?B ^ 2 - 3 * ?C ^ 2"
+      using a1
+      by argo
+    have simp_lhs: "(?A + ?B + ?C)^2 = ?A^2 + ?B^2 + ?C^2 + 2 * ?A * ?B + 2 * ?B * ?C + 2 * ?C * ?A"
+      by algebra
+    have a3: "(?A + ?B + ?C)^2 \<ge>6 * ?A * ?B + 6 * ?B * ?C + 6 *?C * ?A - 3 * ?A^2 - 3 * ?B ^ 2 - 3 * ?C ^ 2"
+      using a2 simp_lhs
+      by presburger
+    show ?thesis sorry
+  qed
 qed
 
 section "equality"
