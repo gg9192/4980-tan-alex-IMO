@@ -11,6 +11,9 @@ lemma diff_of_squares:
 
 lemma IMO1961p2:
   fixes A B C :: "real ^ 2"
+  assumes "A \<noteq> B"
+  assumes "C \<noteq> B"
+  assumes "A \<noteq> C"
   assumes "a = dist B C"
   assumes "b = dist A C" 
   assumes "c = dist A B"
@@ -22,13 +25,13 @@ proof -
   have heron:"S = sqrt (((a + b + c)/2)*((-a + b + c)/2)*((a - b + c)/2)*((a + b - c)/2))"
   proof - 
     have heron1: "S = sqrt (s * (s - a) * (s - b) * (s - c))" 
-      using heron assms(1-5) by blast
+      using heron assms by blast
     show ?thesis using assms(5)
     proof -
       have f1: "s - c \<le> (a + b - c) / 2"
-        by (simp add: assms(5))
+        by (simp add: assms(8))
       have f2: "(a + b - c) / 2 \<le> s - c"
-        by (simp add: assms(5))
+        by (simp add: assms(8))
       then have f3: "(a + b - c) / 2 = s - c"
         using f1 by simp
       have f4: "(a - b + c) / 2 = s - b"
@@ -36,7 +39,7 @@ proof -
       have "(- a + b + c) / 2 = s - a"
         using f2 f1 by simp
       then show ?thesis
-        using f4 f3 assms(5) heron1 by presburger
+        using f4 f3 assms(8) heron1 by presburger
     qed
   qed 
   have factor: "S = (1/4) * sqrt ((a + b + c)*(-a + b + c)*(a - b + c)*(a + b - c))" 
@@ -146,17 +149,19 @@ section "equality"
 
 lemma IMO1961p2_eq:
   fixes A B C :: "real ^ 2"
+  assumes "A \<noteq> B"
+  assumes "C \<noteq> B"
+  assumes "A \<noteq> C"
   assumes "a = dist B C"
   assumes "b = dist A C" 
   assumes "c = dist A B"
   assumes "S = content (convex hull {A, B, C})"
   assumes "s = (a + b + c) / 2"
-  assumes "(a^2) + (b^2) + (c^2) = 4 * S * (sqrt 3)"
   shows "(a^2) + (b^2) + (c^2) = 4 * S * (sqrt 3) \<longleftrightarrow> (a = b \<and> b = c)"
   using assms
 proof -
   { assume a1: "a = b \<and> b = c"
-    have ?thesis using a1 assms(6) by blast}
+    have ?thesis using a1 sorry}
   moreover {assume a2: "a \<noteq> b \<or> b \<noteq> c"
     have heron:"S = sqrt (((a + b + c)/2)*((-a + b + c)/2)*((a - b + c)/2)*((a + b - c)/2))"
       proof - 
@@ -245,7 +250,16 @@ proof -
         proof - 
           have aa: "((?A^2 + ?B^2)/2) + ((?B^2 + ?C^2)/2) + ((?C^2 + ?A^2)/2) > ?A * ?B + ?B * ?C + ?C * ?A"
           proof -
+            have all_non_0: "?A \<noteq> 0 \<and> ?B \<noteq> 0 \<and> ?C \<noteq>0"
+            proof - 
+              have p1: "a > 0" using assms(1,4)
+                 
+              show ?thesis sorry
+            qed
             {assume a1: "a \<noteq> b \<and> b \<noteq> c"
+              
+                  
+              have amgm1: "((?A^2 + ?B^2)/2) > ?A * ?B" using a1 
               have ?thesis using a1  sorry}
             moreover {assume  "a \<noteq> b \<and> b = c"
               have ?thesis sorry}
