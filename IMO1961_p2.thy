@@ -7,7 +7,12 @@ lemma diff_of_squares:
   fixes a b::real
   shows "(a-b)*(a+b) = a^2 - b^2 "
   by (simp add: power2_eq_square square_diff_square_factored)
-    
+
+lemma neq_squares:
+  fixes a b:: real
+  assumes "a > 0" "b > 0" "a \<noteq> b"
+  shows "a^2 \<noteq> b^2"
+  using assms(1) assms(2) assms(3) by auto
 
 lemma IMO1961p2:
   fixes A B C :: "real ^ 2"
@@ -143,9 +148,7 @@ proof -
   qed
 qed
 
-section "equality"
-
-
+section "equality"  
 
 lemma IMO1961p2_eq:
   fixes A B C :: "real ^ 2"
@@ -159,20 +162,20 @@ lemma IMO1961p2_eq:
   assumes "s = (a + b + c) / 2"
   shows "(a^2) + (b^2) + (c^2) = 4 * S * (sqrt 3) \<longleftrightarrow> (a = b \<and> b = c)"
   using assms
-proof -
+proof -  
   { assume a1: "a = b \<and> b = c"
     have ?thesis using a1 sorry}
-  moreover {assume a2: "a \<noteq> b \<or> b \<noteq> c"
+  moreover {assume a2: "a \<noteq> b \<or> b \<noteq> c \<or> a \<noteq> c"
     have heron:"S = sqrt (((a + b + c)/2)*((-a + b + c)/2)*((a - b + c)/2)*((a + b - c)/2))"
       proof - 
         have heron1: "S = sqrt (s * (s - a) * (s - b) * (s - c))" 
-          using heron assms(1-5) by blast
+          using heron assms(4-8) by blast
         show ?thesis using assms(5)
         proof -
           have f1: "s - c \<le> (a + b - c) / 2"
-            by (simp add: assms(5))
+            by (simp add: assms(8))
           have f2: "(a + b - c) / 2 \<le> s - c"
-            by (simp add: assms(5))
+            by (simp add: assms(8))
           then have f3: "(a + b - c) / 2 = s - c"
             using f1 by simp
           have f4: "(a - b + c) / 2 = s - b"
@@ -180,7 +183,7 @@ proof -
           have "(- a + b + c) / 2 = s - a"
             using f2 f1 by simp
           then show ?thesis
-            using f4 f3 assms(5) heron1 by presburger
+            using f4 f3 assms(8) heron1 by presburger
         qed
       qed 
     have factor: "S = (1/4) * sqrt ((a + b + c)*(-a + b + c)*(a - b + c)*(a + b - c))" 
@@ -246,33 +249,54 @@ proof -
       qed
       have gt: "?A + ?B + ?C > sqrt (6 * ?A * ?B + 6 * ?B * ?C + 6 *?C * ?A - 3 * ?A^2 - 3 * ?B ^ 2 - 3 * ?C ^ 2)"
       proof - 
+        have all_gt_0: "a > 0 \<and> b > 0 \<and> c > 0" using assms
+         by simp
         have a1: "?A^2 + ?B^2 + ?C ^2 > ?A * ?B + ?B * ?C + ?C * ?A"
         proof - 
           have aa: "((?A^2 + ?B^2)/2) + ((?B^2 + ?C^2)/2) + ((?C^2 + ?A^2)/2) > ?A * ?B + ?B * ?C + ?C * ?A"
           proof -
-            have all_non_0: "?A \<noteq> 0 \<and> ?B \<noteq> 0 \<and> ?C \<noteq>0"
-            proof - 
-              have p1: "a > 0" using assms(1,4)
-                 
-              show ?thesis sorry
-            qed
-            {assume a1: "a \<noteq> b \<and> b \<noteq> c"
-              
-                  
-              have amgm1: "((?A^2 + ?B^2)/2) > ?A * ?B" using a1 
-              have ?thesis using a1  sorry}
-            moreover {assume  "a \<noteq> b \<and> b = c"
+            {assume asm1: "a \<noteq> b \<and> b \<noteq> c \<and> a \<noteq> c"
+              have "(?A - ?B)^2 > 0" using asm1
+                by (simp add: all_gt_0 neq_squares)
+              then have "?A^2 - ?A * ?B * 2 + ?B^2 > 0"
+                by (simp add: power2_diff)
+              then have "?A^2 + ?B^2 >  ?A * ?B * 2"  
+                by argo
+              then have f1: "((?A^2 + ?B^2)/2) > ?A * ?B" using asm1
+                by simp
+              have ?thesis using f1
+                by (meson add_mono_thms_linordered_field(3) arith_geo_mean power_mult_distrib zero_le_power2)}
+            moreover {assume asm2: "a = b \<and> b \<noteq> c \<and> a \<noteq> c"
+              have f1: "((?A^2 + ?B^2)/2) = ?A * ?B" using asm2
+                by simp
+              have f2: "((?B^2 + ?C^2)/2) > ?B * ?C"
+              proof - 
+                have "(?B - ?C)^2 > 0" using asm2
+                  by (simp add: all_gt_0 neq_squares)
+                then have "?B^2 - 2*?B*?C + ?C^2 > 0"
+                  by (simp add: power2_diff)
+                then show ?thesis
+                  by fastforce  
+              qed
+              have ?thesis using f1 f2
+                by (smt (verit, del_insts) asm2 mult.commute)}
+             moreover {assume "a \<noteq> b \<and> b = c \<and> a \<noteq> c"
+               have ?thesis sorry}
+             moreover {assume "a \<noteq> b \<and> b \<noteq> c \<and> a = c"
+               have ?thesis sorry}
+             moreover {assume "a = b \<and> b = c \<and> a \<noteq> c"
+               have ?thesis sorry}
+             moreover {assume "a = b \<and> b \<noteq> c \<and> a = c"
+               have ?thesis sorry}
+             {assume "a \<noteq> b \<and> b = c \<and> a = c"
               have ?thesis sorry}
-            moreover {assume  "a = b \<and> b \<noteq> c"
-              have ?thesis sorry}
-            ultimately show ?thesis using a2 
-              by linarith 
+              ultimately show ?thesis
+                using a2 by blast
           qed
-          have aaa: "((?A^2 + ?B^2)/2) + ((?B^2 + ?C^2)/2) + ((?C^2 + ?A^2)/2) = ?A^2 + ?B^2 + ?C^2"
-            by argo 
-        show ?thesis using aa aaa
-          by simp
-        
+          have ab: "((?A^2 + ?B^2)/2) + ((?B^2 + ?C^2)/2) + ((?C^2 + ?A^2)/2) = ?A^2 + ?B^2 + ?C^2"
+            by argo
+        show ?thesis using aa ab
+          sorry
         qed
         have a2: "4 * ?A^2 + 4 * ?B^2 + 4 * ?C ^2 > 4 * ?A * ?B + 4 * ?B * ?C + 4 * ?C * ?A" using a1
           by linarith
@@ -287,19 +311,21 @@ proof -
         have rewrite: "(?A + ?B + ?C) ^ 2 > 6 * ?A * ?B + 6 * ?B * ?C + 6 * ?C * ?A - 3 * ?A^2 - 3 * ?B^2 - 3 * ?C^ 2"
           using lhs a4 
           by presburger
-        have pos: "6 * ?A * ?B + 6 * ?B * ?C + 6 * ?C * ?A - 3 * ?A^2 - 3 * ?B^2 - 3 * ?C^ 2 \<ge> 0"
-          by (metis add_nonneg_nonneg assms(6) real_sqrt_ge_0_iff rhs_simp zero_le_power2)
         have last: "?A + ?B + ?C > sqrt (6 * ?A * ?B + 6 * ?B * ?C + 6 * ?C * ?A - 3 * ?A^2 - 3 * ?B^2 - 3 * ?C^ 2)" 
-          using pos rewrite
+          using rewrite
           by (meson add_nonneg_nonneg real_less_lsqrt zero_le_power2) 
-        show ?thesis using last try0
+        show ?thesis using last
+          try0
           by blast
       qed
       have ?thesis using rhs_simp gt
-        using assms(6) by linarith 
+        using assms(7) 
+        using calculation by argo  
   }
   ultimately show ?thesis 
     by fastforce  
 qed
+
+
 
 end
