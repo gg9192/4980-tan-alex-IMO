@@ -211,7 +211,7 @@ proof -
       let ?A = "a^2"
       let ?B = "b^2"
       let ?C = "c^2"
-      have "4 * S * sqrt 3 = sqrt (6 * ?A * ?B + 6 * ?B * ?C + 6 *?C * ?A - 3 * ?A^2 - 3 * ?B ^ 2 - 3 * ?C ^ 2)"
+      have rhs_simp: "4 * S * sqrt 3 = sqrt (6 * ?A * ?B + 6 * ?B * ?C + 6 *?C * ?A - 3 * ?A^2 - 3 * ?B ^ 2 - 3 * ?C ^ 2)"
       proof -
         have a1: "4 * S * sqrt 3 = 4 * ((1/4)::real) * sqrt ((2 * b * c + b ^ 2 + c ^ 2 - a ^ 2) * (2 * b * c - b ^ 2 - c ^ 2 + a ^ 2)) * sqrt (3)"
           using dist
@@ -239,7 +239,10 @@ proof -
         show ?thesis using a1 a2 a3 a4 a5 a6
           by presburger
       qed
-      have ?thesis sorry  
+      have gt: "?A + ?B + ?C > sqrt (6 * ?A * ?B + 6 * ?B * ?C + 6 *?C * ?A - 3 * ?A^2 - 3 * ?B ^ 2 - 3 * ?C ^ 2)"
+        sorry
+      have ?thesis using rhs_simp gt
+        using assms(6) by linarith 
   }
   ultimately show ?thesis
     by fastforce  
