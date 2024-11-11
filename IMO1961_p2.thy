@@ -314,9 +314,17 @@ proof -
                have ?thesis using eq gt
                  using asm5 by force}
              moreover {assume asm6:"a = b \<and> b \<noteq> c \<and> a = c"
-               have ?thesis sorry}
+               have eq: "(?A^2 + ?B^2)/2 = ?A * ?B" using asm6
+                 by simp
+               have gt: "((?B^2 + ?C^2)/2) > ?B * ?C"
+                 using asm6 by blast
+               have ?thesis using eq gt
+                 using asm6 by blast}
              {assume asm7:"a \<noteq> b \<and> b = c \<and> a = c"
-              have ?thesis sorry}
+               have gt: "(?A^2 + ?B^2)/2 > ?A * ?B" using asm7
+                 by auto
+              have ?thesis using gt
+                using asm7 by force}
               ultimately show ?thesis
                 using a2 by blast
           qed
