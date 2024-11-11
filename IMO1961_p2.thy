@@ -280,15 +280,42 @@ proof -
               qed
               have ?thesis using f1 f2
                 by (smt (verit, del_insts) asm2 mult.commute)}
-             moreover {assume "a \<noteq> b \<and> b = c \<and> a \<noteq> c"
+            moreover {assume asm3: "a \<noteq> b \<and> b = c \<and> a \<noteq> c"
+              have eq: "(?B^2 + ?C^2)/2 = ?B * ?C" using asm3
+                by simp 
+              have "(?A - ?B)^2 > 0" using asm3
+                by (simp add: all_gt_0 neq_squares)
+              then have "?A^2 - ?A * ?B * 2 + ?B^2 > 0"
+                by (simp add: power2_diff)
+              then have "?A^2 + ?B^2 >  ?A * ?B * 2"  
+                by argo
+              then have f1: "((?A^2 + ?B^2)/2) > ?A * ?B" using asm3
+                by simp
+               have ?thesis using eq f1
+                 by (smt (verit, del_insts) asm3 mult.commute)}
+             moreover {assume asm4: "a \<noteq> b \<and> b \<noteq> c \<and> a = c"
+               have eq: "(?C^2 + ?A^2)/2 = ?C * ?A" using asm4
+                 by simp
+               have "(?A - ?B)^2 > 0" using asm4
+                by (simp add: all_gt_0 neq_squares)
+              then have "?A^2 - ?A * ?B * 2 + ?B^2 > 0"
+                by (simp add: power2_diff)
+              then have "?A^2 + ?B^2 >  ?A * ?B * 2"  
+                by argo
+              then have f1: "((?A^2 + ?B^2)/2) > ?A * ?B" using asm4
+                by simp
+               have ?thesis using eq f1
+                 by (smt (verit, del_insts) asm4 mult.commute)}
+             moreover {assume asm5:"a = b \<and> b = c \<and> a \<noteq> c"
+               have eq: "(?A^2 + ?B^2)/2 = ?A * ?B" using asm5
+                 by simp
+               have gt: "((?C^2 + ?A^2)/2) > ?C * ?A" using asm5
+                 by force
+               have ?thesis using eq gt
+                 using asm5 by force}
+             moreover {assume asm6:"a = b \<and> b \<noteq> c \<and> a = c"
                have ?thesis sorry}
-             moreover {assume "a \<noteq> b \<and> b \<noteq> c \<and> a = c"
-               have ?thesis sorry}
-             moreover {assume "a = b \<and> b = c \<and> a \<noteq> c"
-               have ?thesis sorry}
-             moreover {assume "a = b \<and> b \<noteq> c \<and> a = c"
-               have ?thesis sorry}
-             {assume "a \<noteq> b \<and> b = c \<and> a = c"
+             {assume asm7:"a \<noteq> b \<and> b = c \<and> a = c"
               have ?thesis sorry}
               ultimately show ?thesis
                 using a2 by blast
@@ -296,7 +323,7 @@ proof -
           have ab: "((?A^2 + ?B^2)/2) + ((?B^2 + ?C^2)/2) + ((?C^2 + ?A^2)/2) = ?A^2 + ?B^2 + ?C^2"
             by argo
         show ?thesis using aa ab
-          sorry
+          by force
         qed
         have a2: "4 * ?A^2 + 4 * ?B^2 + 4 * ?C ^2 > 4 * ?A * ?B + 4 * ?B * ?C + 4 * ?C * ?A" using a1
           by linarith
