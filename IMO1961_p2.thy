@@ -158,100 +158,88 @@ proof -
   { assume a1: "a = b \<and> b = c"
     have ?thesis using a1 assms(6) by blast}
   moreover {assume a2: "a \<noteq> b \<or> b \<noteq> c"
-  have heron:"S = sqrt (((a + b + c)/2)*((-a + b + c)/2)*((a - b + c)/2)*((a + b - c)/2))"
-  proof - 
-    have heron1: "S = sqrt (s * (s - a) * (s - b) * (s - c))" 
-      using heron assms(1-5) by blast
-    show ?thesis using assms(5)
-    proof -
-      have f1: "s - c \<le> (a + b - c) / 2"
-        by (simp add: assms(5))
-      have f2: "(a + b - c) / 2 \<le> s - c"
-        by (simp add: assms(5))
-      then have f3: "(a + b - c) / 2 = s - c"
-        using f1 by simp
-      have f4: "(a - b + c) / 2 = s - b"
-        using f2 f1 by simp
-      have "(- a + b + c) / 2 = s - a"
-        using f2 f1 by simp
-      then show ?thesis
-        using f4 f3 assms(5) heron1 by presburger
-    qed
-  qed 
-  have factor: "S = (1/4) * sqrt ((a + b + c)*(-a + b + c)*(a - b + c)*(a + b - c))" 
-    proof -
-      have fac1: "S = sqrt ((1/16)*((a + b + c)*(-a + b + c)*(a - b + c)*(a + b - c)))"
-        using local.heron by auto 
-      then have mult: "sqrt ((1/16)*((a + b + c)*(-a + b + c)*(a - b + c)*(a + b - c))) = sqrt (1/16) * sqrt ((a + b + c)*(-a + b + c)*(a - b + c)*(a + b - c)) "
-        using real_sqrt_mult by blast
-      have simp: "sqrt ((1/16)::real) = ((1/4)::real)"
-        using real_sqrt_divide by fastforce
-      show ?thesis using fac1 mult simp
-        by presburger 
-    qed
-  have dist: "S = (1/4) * sqrt ((2 * b * c + b ^ 2 + c ^ 2 - a ^ 2) * (2 * b * c - b ^ 2 - c ^ 2 + a ^ 2))"
-    proof -
-      have alg1: "(a + b + c)*(-a + b + c) = (2 * b * c + b ^ 2 + c ^ 2 - a ^ 2)"
+    have heron:"S = sqrt (((a + b + c)/2)*((-a + b + c)/2)*((a - b + c)/2)*((a + b - c)/2))"
       proof - 
-        have a1: "(a + b + c)*(-a + b + c) = - (a ^ 2) + a * b + a * c - b * a  + b ^ 2 + b * c -a * c + c * b + c^ 2"
-          by (smt (verit, del_insts) combine_common_factor distrib_left mult.commute power2_eq_square)
-        show ?thesis using a1
-          by simp
-      qed
-      have alg2:  "(a - b + c)*(a + b - c) = (2 * b * c - b ^ 2 - c ^ 2 + a ^ 2)"
+        have heron1: "S = sqrt (s * (s - a) * (s - b) * (s - c))" 
+          using heron assms(1-5) by blast
+        show ?thesis using assms(5)
+        proof -
+          have f1: "s - c \<le> (a + b - c) / 2"
+            by (simp add: assms(5))
+          have f2: "(a + b - c) / 2 \<le> s - c"
+            by (simp add: assms(5))
+          then have f3: "(a + b - c) / 2 = s - c"
+            using f1 by simp
+          have f4: "(a - b + c) / 2 = s - b"
+            using f2 f1 by simp
+          have "(- a + b + c) / 2 = s - a"
+            using f2 f1 by simp
+          then show ?thesis
+            using f4 f3 assms(5) heron1 by presburger
+        qed
+      qed 
+    have factor: "S = (1/4) * sqrt ((a + b + c)*(-a + b + c)*(a - b + c)*(a + b - c))" 
       proof -
-        have a1: "(a - b + c)*(a + b - c) = a ^ 2 + a * b - a * c - b * a - b ^ 2 + b * c + c * a + c * b - c ^ 2"
-          by (smt (verit) diff_add_eq diff_diff_eq2 left_diff_distrib power2_eq_square right_diff_distrib)
-        show ?thesis using a1
-          by force
+        have fac1: "S = sqrt ((1/16)*((a + b + c)*(-a + b + c)*(a - b + c)*(a + b - c)))"
+          using local.heron by auto 
+        then have mult: "sqrt ((1/16)*((a + b + c)*(-a + b + c)*(a - b + c)*(a + b - c))) = sqrt (1/16) * sqrt ((a + b + c)*(-a + b + c)*(a - b + c)*(a + b - c)) "
+          using real_sqrt_mult by blast
+        have simp: "sqrt ((1/16)::real) = ((1/4)::real)"
+          using real_sqrt_divide by fastforce
+        show ?thesis using fac1 mult simp
+          by presburger 
       qed
-      show ?thesis using alg1 alg2
-        by (simp add: factor)  
-    qed
-  have rhs: "4*S*(sqrt 3) = sqrt (3 * ((4 * (b ^ 2) * (c ^ 2)) - (b\<^sup>2 + c\<^sup>2 - a\<^sup>2)\<^sup>2))"
-    proof - 
-      have d1: "4 * S * (sqrt 3) = 4 * (1/4) * sqrt ((2 * b * c + b ^ 2 + c ^ 2 - a ^ 2) * (2 * b * c - b ^ 2 - c ^ 2 + a ^ 2)) * sqrt 3" 
-        using dist
-        by auto
-      have numbers: " 4 * ((1/4)::real) = 1"
-        by simp
-      have d2: "4 * S * (sqrt 3) =  sqrt ((2 * b * c + b ^ 2 + c ^ 2 - a ^ 2) * (2 * b * c - b ^ 2 - c ^ 2 + a ^ 2)) * sqrt 3" 
-        using d1 numbers
-        by auto
-      have invert: "(2 * b * c - b ^ 2 - c ^ 2 + a ^ 2) = (2 * b * c - (b ^ 2 + c ^ 2 - a ^ 2))"
-        by argo
-      have d3:  "(2 * b * c + b ^ 2 + c ^ 2 - a ^ 2) * (2 * b * c - (b ^ 2 + c ^ 2 - a ^ 2)) = (4 * (b ^ 2) * (c ^ 2)) - (b\<^sup>2 + c\<^sup>2 - a\<^sup>2)\<^sup>2"
-        by algebra
-      have d4: "sqrt (2 * b * c + b ^ 2 + c ^ 2 - a ^ 2) * (2 * b * c - b ^ 2 - c ^ 2 + a ^ 2) * sqrt 3 = sqrt (2 * b * c + b ^ 2 + c ^ 2 - a ^ 2) * (2 * b * c - (b ^ 2 + c ^ 2 - a ^ 2)) * sqrt 3" 
-        using invert
-        by presburger
-      show ?thesis using d4 diff_of_squares
-        by (metis (no_types, opaque_lifting) d2 d3 invert mult.commute real_sqrt_mult) 
-    qed
-    let ?A = "a^2"
-    let ?B = "b^2"
-    let ?C = "c^2"
-    have og_gt: "?A + ?B + ?C > sqrt (6 * ?A * ?B + 6 * ?B * ?C + 6 *?C * ?A - 3 * ?A^2 - 3 * ?B ^ 2 - 3 * ?C ^ 2)"
-      using a2 sorry
-    have gt: "?A + ?B + ?C > 4 * S * sqrt 3"
-    proof - 
-      have a6:"sqrt (3 * ((4 * (b ^ 2) * (c ^ 2)) - (b\<^sup>2 + c\<^sup>2 - a\<^sup>2)\<^sup>2)) = sqrt (6 * ?A * ?B + 6 * ?B * ?C + 6 *?C * ?A - 3 * ?A^2 - 3 * ?B ^ 2 - 3 * ?C ^ 2)"
+    have dist: "S = (1/4) * sqrt ((2 * b * c + b ^ 2 + c ^ 2 - a ^ 2) * (2 * b * c - b ^ 2 - c ^ 2 + a ^ 2))"
+      proof -
+        have alg1: "(a + b + c)*(-a + b + c) = (2 * b * c + b ^ 2 + c ^ 2 - a ^ 2)"
         proof - 
-          have replace:  "sqrt (3 * ((4 * (b ^ 2) * (c ^ 2)) - (b\<^sup>2 + c\<^sup>2 - a\<^sup>2)\<^sup>2)) = sqrt (3 * ((4 * ?B * ?C) - (?B + ?C - ?A)\<^sup>2))"
-            by auto
-          have a1:"(?B + ?C - ?A)\<^sup>2 = (?B^2) + 2 * ?B * ?C - 2 * ?A * ?B - 2 * ?A * ?C + (?A^2) + (?C^2)"
-            by algebra
-          have a2: " sqrt (3 * ((4 * ?B * ?C) - (?B + ?C - ?A)\<^sup>2)) =  sqrt (3 * ((4 * ?B * ?C) - ((?B^2) + 2 * ?B * ?C - 2 * ?A * ?B - 2 * ?A * ?C + (?A^2) + (?C^2))))"
-            using a1
-            by presburger 
-          have a3: " sqrt (3 * ((4 * ?B * ?C) - ((?B^2) + 2 * ?B * ?C - 2 * ?A * ?B - 2 * ?A * ?C + (?A^2) + (?C^2)))) =  sqrt (3 * ((4 * ?B * ?C) - (?B^2 + 2 * ?B * ?C - 2 * ?A * ?B - 2 * ?A *?C + ?A^2 + ?C^2)))"
-            by blast
-          show ?thesis using replace a1 a2 a3
-            by argo
-         qed
-    qed
-  have ?thesis using gt a2 rhs
-    by argo
+          have a1: "(a + b + c)*(-a + b + c) = - (a ^ 2) + a * b + a * c - b * a  + b ^ 2 + b * c -a * c + c * b + c^ 2"
+            by (smt (verit, del_insts) combine_common_factor distrib_left mult.commute power2_eq_square)
+          show ?thesis using a1
+            by simp
+        qed
+        have alg2:  "(a - b + c)*(a + b - c) = (2 * b * c - b ^ 2 - c ^ 2 + a ^ 2)"
+        proof -
+          have a1: "(a - b + c)*(a + b - c) = a ^ 2 + a * b - a * c - b * a - b ^ 2 + b * c + c * a + c * b - c ^ 2"
+            by (smt (verit) diff_add_eq diff_diff_eq2 left_diff_distrib power2_eq_square right_diff_distrib)
+          show ?thesis using a1
+            by force
+        qed
+        show ?thesis using alg1 alg2
+          by (simp add: factor)  
+      qed
+      let ?A = "a^2"
+      let ?B = "b^2"
+      let ?C = "c^2"
+      have "4 * S * sqrt 3 = sqrt (6 * ?A * ?B + 6 * ?B * ?C + 6 *?C * ?A - 3 * ?A^2 - 3 * ?B ^ 2 - 3 * ?C ^ 2)"
+      proof -
+        have a1: "4 * S * sqrt 3 = 4 * ((1/4)::real) * sqrt ((2 * b * c + b ^ 2 + c ^ 2 - a ^ 2) * (2 * b * c - b ^ 2 - c ^ 2 + a ^ 2)) * sqrt (3)"
+          using dist
+          by fastforce
+        have id: "4 * ((1/4)::real) = 1"
+          by auto
+        have a2: "4 * S * sqrt 3 =  sqrt ((2 * b * c + b ^ 2 + c ^ 2 - a ^ 2) * (2 * b * c - b ^ 2 - c ^ 2 + a ^ 2)) * sqrt (3)"
+          using a1 id
+          by simp
+        have a3: "sqrt ((2 * b * c + b ^ 2 + c ^ 2 - a ^ 2) * (2 * b * c - b ^ 2 - c ^ 2 + a ^ 2)) * sqrt (3) =  sqrt ((2 * b * c + b ^ 2 + c ^ 2 - a ^ 2) * (2 * b * c - (b ^ 2 + c ^ 2 - a ^ 2))) * sqrt (3)"
+          by simp
+        have dos: "(2 * b * c + b ^ 2 + c ^ 2 - a ^ 2) * (2 * b * c - (b ^ 2 + c ^ 2 - a ^ 2)) = 4*b^2*c^2 - (b^2 + c ^ 2 - a ^ 2)^2" 
+          using diff_of_squares[of "2 * b * c" "b\<^sup>2 + c\<^sup>2 - a\<^sup>2"]
+          by (smt (verit, best) add.commute add.left_commute four_x_squared minus_diff_eq mult.commute power_mult_distrib uminus_add_conv_diff) 
+        have a4: "sqrt ((2 * b * c + b ^ 2 + c ^ 2 - a ^ 2) * (2 * b * c - (b ^ 2 + c ^ 2 - a ^ 2))) * sqrt (3) = sqrt (4*b^2*c^2 - (b^2 + c ^ 2 - a ^ 2)^2) * sqrt (3)"
+          using dos a3
+          by presburger
+        have a5: "sqrt (4*b^2*c^2 - (b^2 + c ^ 2 - a ^ 2)^2) * sqrt (3) = sqrt (3*(4*b^2*c^2 - (b^2 + c ^ 2 - a ^ 2)^2))"
+          by (metis (no_types, opaque_lifting) mult.commute real_sqrt_mult) 
+        have distb: "3*(4*b^2*c^2 - (b^2 + c ^ 2 - a ^ 2)^2) = (6 * ?A * ?B + 6 * ?B * ?C + 6 *?C * ?A - 3 * ?A^2 - 3 * ?B ^ 2 - 3 * ?C ^ 2)"
+          by algebra
+        have a6: "sqrt (3*(4*b^2*c^2 - (b^2 + c ^ 2 - a ^ 2)^2)) = sqrt (6 * ?A * ?B + 6 * ?B * ?C + 6 *?C * ?A - 3 * ?A^2 - 3 * ?B ^ 2 - 3 * ?C ^ 2)"
+          using distb
+          by presburger
+        show ?thesis using a1 a2 a3 a4 a5 a6
+          by presburger
+      qed
+      have ?thesis sorry  
   }
   ultimately show ?thesis
     by fastforce  
