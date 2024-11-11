@@ -240,7 +240,30 @@ proof -
           by presburger
       qed
       have gt: "?A + ?B + ?C > sqrt (6 * ?A * ?B + 6 * ?B * ?C + 6 *?C * ?A - 3 * ?A^2 - 3 * ?B ^ 2 - 3 * ?C ^ 2)"
-        sorry
+      proof - 
+        have a1: "?A^2 + ?B^2 + ?C ^2 > ?A * ?B + ?B * ?C + ?C * ?A"
+          sorry
+        have a2: "4 * ?A^2 + 4 * ?B^2 + 4 * ?C ^2 > 4 * ?A * ?B + 4 * ?B * ?C + 4 * ?C * ?A" using a1
+          by linarith
+        have a3: "?A^2 + ?B^2 + ?C ^2 > 4 * ?A * ?B + 4 * ?B * ?C + 4 * ?C * ?A - 3 * ?A^2 - 3 * ?B^2 - 3 * ?C^ 2" 
+          using a2
+          by argo
+        have a4: "?A^2 + ?B^2 + ?C^2 + 2 * ?A * ?B + 2 * ?B * ?C + 2 * ?C * ?A > 6 * ?A * ?B + 6 * ?B * ?C + 6 * ?C * ?A - 3 * ?A^2 - 3 * ?B^2 - 3 * ?C^ 2"
+          using a3
+          by argo
+        have lhs: "?A^2 + ?B^2 + ?C^2 + 2 * ?A * ?B + 2 * ?B * ?C + 2 * ?C * ?A = (?A + ?B + ?C) ^ 2"
+          by algebra
+        have rewrite: "(?A + ?B + ?C) ^ 2 > 6 * ?A * ?B + 6 * ?B * ?C + 6 * ?C * ?A - 3 * ?A^2 - 3 * ?B^2 - 3 * ?C^ 2"
+          using lhs a4 
+          by presburger
+        have pos: "6 * ?A * ?B + 6 * ?B * ?C + 6 * ?C * ?A - 3 * ?A^2 - 3 * ?B^2 - 3 * ?C^ 2 \<ge> 0"
+          by (metis add_nonneg_nonneg assms(6) real_sqrt_ge_0_iff rhs_simp zero_le_power2)
+        have last: "?A + ?B + ?C > sqrt (6 * ?A * ?B + 6 * ?B * ?C + 6 * ?C * ?A - 3 * ?A^2 - 3 * ?B^2 - 3 * ?C^ 2)" 
+          using pos rewrite
+          by (meson add_nonneg_nonneg real_less_lsqrt zero_le_power2) 
+        show ?thesis using last try0
+          by blast
+      qed
       have ?thesis using rhs_simp gt
         using assms(6) by linarith 
   }
