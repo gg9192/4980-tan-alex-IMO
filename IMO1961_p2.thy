@@ -242,7 +242,24 @@ proof -
       have gt: "?A + ?B + ?C > sqrt (6 * ?A * ?B + 6 * ?B * ?C + 6 *?C * ?A - 3 * ?A^2 - 3 * ?B ^ 2 - 3 * ?C ^ 2)"
       proof - 
         have a1: "?A^2 + ?B^2 + ?C ^2 > ?A * ?B + ?B * ?C + ?C * ?A"
-          sorry
+        proof - 
+          have aa: "((?A^2 + ?B^2)/2) + ((?B^2 + ?C^2)/2) + ((?C^2 + ?A^2)/2) > ?A * ?B + ?B * ?C + ?C * ?A"
+          proof -
+            {assume a1: "a \<noteq> b \<and> b \<noteq> c"
+              have ?thesis using a1  sorry}
+            moreover {assume  "a \<noteq> b \<and> b = c"
+              have ?thesis sorry}
+            moreover {assume  "a = b \<and> b \<noteq> c"
+              have ?thesis sorry}
+            ultimately show ?thesis using a2 
+              by linarith 
+          qed
+          have aaa: "((?A^2 + ?B^2)/2) + ((?B^2 + ?C^2)/2) + ((?C^2 + ?A^2)/2) = ?A^2 + ?B^2 + ?C^2"
+            by argo 
+        show ?thesis using aa aaa
+          by simp
+        
+        qed
         have a2: "4 * ?A^2 + 4 * ?B^2 + 4 * ?C ^2 > 4 * ?A * ?B + 4 * ?B * ?C + 4 * ?C * ?A" using a1
           by linarith
         have a3: "?A^2 + ?B^2 + ?C ^2 > 4 * ?A * ?B + 4 * ?B * ?C + 4 * ?C * ?A - 3 * ?A^2 - 3 * ?B^2 - 3 * ?C^ 2" 
@@ -267,7 +284,7 @@ proof -
       have ?thesis using rhs_simp gt
         using assms(6) by linarith 
   }
-  ultimately show ?thesis
+  ultimately show ?thesis 
     by fastforce  
 qed
 
