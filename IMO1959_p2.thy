@@ -73,7 +73,45 @@ qed
 
 subsection "part b"
 
+lemma IMO1959_p2_b:
+  fixes x::real
+  assumes "2 * x - 1 \<ge> 0"
+  assumes "x - sqrt (2 * x - 1) \<ge> 0"
+  shows "(sqrt (x + sqrt (2 * x - 1)) + sqrt (x - sqrt (2 * x - 1)) \<noteq> 1)"
+  using assms
+proof -
+  {assume "x < ((1/2)::real)"
+    then have ?thesis using assms
+      by simp}
+  moreover {assume "x \<ge> ((1/2)::real) \<and> x \<le> 1"
+    then have ?thesis using IMO1959_p2_a assms(2) 
+      by auto}
+  moreover {assume "x > 1"
+    then have ?thesis
+      by (smt (verit) assms(2) real_sqrt_ge_0_iff real_sqrt_ge_1_iff sqrt_ge_absD sqrt_le_D)}
+  ultimately show ?thesis
+    by linarith
+qed
 subsection "part c"
 
+lemma IMO1959_p2_c:
+  fixes x::real
+  assumes "2 * x - 1 \<ge> 0"
+  assumes "x - sqrt (2 * x - 1) \<ge> 0"
+  shows " (x < ((3/2)::real)) \<Longrightarrow> (sqrt (x + sqrt (2 * x - 1)) + sqrt (x - sqrt (2 * x - 1)) \<noteq> 2)"
+      "(x > ((3/2)::real)) \<Longrightarrow> (sqrt (x + sqrt (2 * x - 1)) + sqrt (x - sqrt (2 * x - 1)) \<noteq> 2)"
+      "(x = ((3/2)::real)) \<Longrightarrow> (sqrt (x + sqrt (2 * x - 1)) + sqrt (x - sqrt (2 * x - 1)) = 2)"
+  using assms
+proof -
+  show "(x < ((3/2)::real)) \<Longrightarrow> (sqrt (x + sqrt (2 * x - 1)) + sqrt (x - sqrt (2 * x - 1)) \<noteq> 2)"
+    by (smt (z3) assms(1) assms(2) eq_simp field_sum_of_halves four_x_squared one_le_power)
+  show "(x > ((3/2)::real)) \<Longrightarrow> (sqrt (x + sqrt (2 * x - 1)) + sqrt (x - sqrt (2 * x - 1)) \<noteq> 2)"
+    using assms(2) eq_simp by fastforce
+  have "(x = ((3/2)::real)) \<Longrightarrow> ( 2 * (x + abs(x - 1)) = 2^2)"
+    by force
+  then show "(x = ((3/2)::real)) \<Longrightarrow> (sqrt (x + sqrt (2 * x - 1)) + sqrt (x - sqrt (2 * x - 1)) = 2)"
+     using eq_simp
+     by (smt (verit) assms(2) field_sum_of_halves real_sqrt_ge_0_iff real_sqrt_unique) 
+qed
 
 end
