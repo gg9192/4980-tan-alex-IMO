@@ -53,13 +53,28 @@ qed
 
 subsection "part a"
 
+
 lemma IMO1959_p2:
   fixes x::real
   assumes "2 * x - 1 \<ge> 0"
   assumes "x - sqrt (2 * x - 1) \<ge> 0"
   assumes "A = sqrt 2"
-  shows "\<forall>x::real. (x < ((1/2)::real)) \<and> (sqrt (x + sqrt (2 * x - 1)) + sqrt (x - sqrt (2 * x - 1)) \<noteq> A)"
-      "\<forall>x::real. (x > (1::real)) \<and> (sqrt (x + sqrt (2 * x - 1)) + sqrt (x - sqrt (2 * x - 1)) \<noteq> A)"
-      "\<forall>x::real. ((x \<ge> ((1/2)::real)) \<and> (x \<le> (1::real))) \<and> (sqrt (x + sqrt (2 * x - 1)) + sqrt (x - sqrt (2 * x - 1)) = A)"
-  sorry
+  shows "\<forall>x::real. (x < ((1/2)::real)) \<Longrightarrow> (sqrt (x + sqrt (2 * x - 1)) + sqrt (x - sqrt (2 * x - 1)) \<noteq> A)"
+      "\<forall>x::real. (x > (1::real)) \<Longrightarrow> (sqrt (x + sqrt (2 * x - 1)) + sqrt (x - sqrt (2 * x - 1)) \<noteq> A)"
+      "\<forall>x::real. ((x \<ge> ((1/2)::real)) \<and> (x \<le> (1::real))) \<Longrightarrow> (sqrt (x + sqrt (2 * x - 1)) + sqrt (x - sqrt (2 * x - 1)) = A)"
+  using assms
+proof - 
+  show a1:"\<forall>x::real. (x < ((1/2)::real)) \<Longrightarrow> (sqrt (x + sqrt (2 * x - 1)) + sqrt (x - sqrt (2 * x - 1)) \<noteq> A)"
+    by blast
+  show a2: "\<forall>x::real. (x > (1::real)) \<Longrightarrow> (sqrt (x + sqrt (2 * x - 1)) + sqrt (x - sqrt (2 * x - 1)) \<noteq> A)"
+    by blast
+  show a3: "\<forall>x::real. ((x \<ge> ((1/2)::real)) \<and> (x \<le> (1::real))) \<Longrightarrow> (sqrt (x + sqrt (2 * x - 1)) + sqrt (x - sqrt (2 * x - 1)) = A)"
+    using numeral_le_one_iff semiring_norm(69) by blast
+qed
+
+subsection "part b"
+
+subsection "part c"
+
+
 end
