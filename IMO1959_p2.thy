@@ -54,7 +54,7 @@ qed
 subsection "part a"
 
 
-lemma IMO1959_p2:
+lemma IMO1959_p2_a:
   fixes x::real
   assumes "2 * x - 1 \<ge> 0"
   assumes "x - sqrt (2 * x - 1) \<ge> 0"
@@ -73,6 +73,15 @@ proof -
 qed
 
 subsection "part b"
+lemma IMO1959_p2_b:
+  fixes x::real
+  assumes "2 * x - 1 \<ge> 0"
+  assumes "x - sqrt (2 * x - 1) \<ge> 0"
+  assumes "A = sqrt 2"
+  shows "\<forall>x::real. (x < ((1/2)::real)) \<Longrightarrow> (sqrt (x + sqrt (2 * x - 1)) + sqrt (x - sqrt (2 * x - 1)) \<noteq> A)"
+      "\<forall>x::real. (x > (1::real)) \<Longrightarrow> (sqrt (x + sqrt (2 * x - 1)) + sqrt (x - sqrt (2 * x - 1)) \<noteq> A)"
+      "\<forall>x::real. ((x \<ge> ((1/2)::real)) \<and> (x \<le> (1::real))) \<Longrightarrow> (sqrt (x + sqrt (2 * x - 1)) + sqrt (x - sqrt (2 * x - 1)) = A)"
+  sorry
 
 subsection "part c"
 
