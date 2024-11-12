@@ -58,30 +58,20 @@ lemma IMO1959_p2_a:
   fixes x::real
   assumes "2 * x - 1 \<ge> 0"
   assumes "x - sqrt (2 * x - 1) \<ge> 0"
-  assumes "A = sqrt 2"
-  shows "\<forall>x::real. (x < ((1/2)::real)) \<Longrightarrow> (sqrt (x + sqrt (2 * x - 1)) + sqrt (x - sqrt (2 * x - 1)) \<noteq> A)"
-      "\<forall>x::real. (x > (1::real)) \<Longrightarrow> (sqrt (x + sqrt (2 * x - 1)) + sqrt (x - sqrt (2 * x - 1)) \<noteq> A)"
-      "\<forall>x::real. ((x \<ge> ((1/2)::real)) \<and> (x \<le> (1::real))) \<Longrightarrow> (sqrt (x + sqrt (2 * x - 1)) + sqrt (x - sqrt (2 * x - 1)) = A)"
+  shows " (x < ((1/2)::real)) \<Longrightarrow> (sqrt (x + sqrt (2 * x - 1)) + sqrt (x - sqrt (2 * x - 1)) \<noteq> (sqrt 2))"
+      "(x > (1::real)) \<Longrightarrow> (sqrt (x + sqrt (2 * x - 1)) + sqrt (x - sqrt (2 * x - 1)) \<noteq> (sqrt 2))"
+      "((x \<ge> ((1/2)::real)) \<and> (x \<le> (1::real))) \<Longrightarrow> (sqrt (x + sqrt (2 * x - 1)) + sqrt (x - sqrt (2 * x - 1)) = (sqrt 2))"
   using assms
 proof - 
-  show a1:"\<forall>x::real. (x < ((1/2)::real)) \<Longrightarrow> (sqrt (x + sqrt (2 * x - 1)) + sqrt (x - sqrt (2 * x - 1)) \<noteq> A)"
-    by blast
-  show a2: "\<forall>x::real. (x > (1::real)) \<Longrightarrow> (sqrt (x + sqrt (2 * x - 1)) + sqrt (x - sqrt (2 * x - 1)) \<noteq> A)"
-    by blast
-  show a3: "\<forall>x::real. ((x \<ge> ((1/2)::real)) \<and> (x \<le> (1::real))) \<Longrightarrow> (sqrt (x + sqrt (2 * x - 1)) + sqrt (x - sqrt (2 * x - 1)) = A)"
-    using numeral_le_one_iff semiring_norm(69) by blast
+  show " (x < ((1/2)::real)) \<Longrightarrow> (sqrt (x + sqrt (2 * x - 1)) + sqrt (x - sqrt (2 * x - 1)) \<noteq> (sqrt 2))"
+    using assms(1) by linarith
+  show "(x > (1::real)) \<Longrightarrow> (sqrt (x + sqrt (2 * x - 1)) + sqrt (x - sqrt (2 * x - 1)) \<noteq> (sqrt 2))"
+    using assms(2) eq_simp by fastforce
+  show "((x \<ge> ((1/2)::real)) \<and> (x \<le> (1::real))) \<Longrightarrow> (sqrt (x + sqrt (2 * x - 1)) + sqrt (x - sqrt (2 * x - 1)) = (sqrt 2))"
+    by (smt (verit, ccfv_SIG) assms(1) assms(2) eq_simp pos2 power2_eq_imp_eq real_root_le_iff real_root_pow_pos2 real_sqrt_zero sqrt_def)
 qed
 
 subsection "part b"
-lemma IMO1959_p2_b:
-  fixes x::real
-  assumes "2 * x - 1 \<ge> 0"
-  assumes "x - sqrt (2 * x - 1) \<ge> 0"
-  assumes "A = sqrt 2"
-  shows "\<forall>x::real. (x < ((1/2)::real)) \<Longrightarrow> (sqrt (x + sqrt (2 * x - 1)) + sqrt (x - sqrt (2 * x - 1)) \<noteq> A)"
-      "\<forall>x::real. (x > (1::real)) \<Longrightarrow> (sqrt (x + sqrt (2 * x - 1)) + sqrt (x - sqrt (2 * x - 1)) \<noteq> A)"
-      "\<forall>x::real. ((x \<ge> ((1/2)::real)) \<and> (x \<le> (1::real))) \<Longrightarrow> (sqrt (x + sqrt (2 * x - 1)) + sqrt (x - sqrt (2 * x - 1)) = A)"
-  sorry
 
 subsection "part c"
 
