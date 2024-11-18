@@ -259,20 +259,126 @@ lemma IMO2021_p1:
 proof - 
   have ex_3: "\<exists> a b c::int. (a \<noteq> b \<and> a \<noteq> c \<and> b \<noteq> c \<and> a \<noteq> c) \<and> (a \<in> cards \<and> b \<in> cards \<and> c \<in> cards) \<and> ((perfect_square (a + b)) \<and> (perfect_square (a + c)) \<and> (perfect_square (c + b)) \<and> (perfect_square (a + c)) ) "
   proof - 
-    {assume "n = 100"
-      then have ?thesis sorry }
-    moreover {assume "n = 101" 
-      then have ?thesis sorry}
-    moreover {assume "n = 102" 
-      then have ?thesis sorry}
-    moreover {assume "n = 103" 
-      then have ?thesis sorry}
-    moreover {assume "n = 104" 
-      then have ?thesis sorry}
-    moreover {assume "n = 105" 
-      then have ?thesis sorry}
-    moreover {assume "n = 106" 
-      then have ?thesis sorry}
+    {assume asm: "n \<ge>100 \<and> n < 107"
+      let ?a = "126::int"
+      let ?b = "163::int"
+      let ?c = "198::int"
+      have aneq: "?a \<noteq> ?b \<and> ?a \<noteq> ?c \<and> ?b \<noteq> ?c"
+        by presburger
+      have amemb: "?a \<in> cards \<and> ?b \<in> cards \<and> ?c \<in> cards" using asm
+      proof - 
+        have a: "?a \<in> cards" using asm assms(3)
+        proof -
+            {assume "n=100"
+              have "126 \<in> {(100::int)..200}"
+                by simp
+              then have ?thesis using asm
+                using assms(3) by auto  }
+            moreover  {assume a:  "n=101"
+              have "126 \<in> {(101::int)..202}"
+                by simp
+              then have ?thesis
+                using assms(3) a
+                by force }
+             moreover  {assume a: "n=102"
+              have "126 \<in> {(102::int)..204}"
+                by simp
+              then have ?thesis using assms(3) a
+                by simp }
+             moreover  {assume a: "n=103"
+              have "126 \<in> {(103::int)..206}"
+                by simp
+              then have ?thesis using asm 
+              by (simp add: assms(3))}
+             moreover  {assume a: "n=104"
+              have "126 \<in> {(104::int)..208}"
+                by simp
+              then have ?thesis using assms(3) a by force}
+             moreover  {assume a: "n=105"
+              have "126 \<in> {(105::int)..210}"
+                by simp
+              then have ?thesis using assms(3) a by force}
+             moreover  {assume a: "n=106"
+              have "126 \<in> {(106::int)..212}"
+                by simp
+              then have ?thesis using assms(3) a by force}
+            ultimately show ?thesis using asm
+              by fastforce
+          qed
+          have b: "?b \<in> cards"
+          proof - 
+            {assume a: "n = 100"
+              then have "?b \<in> {(100::int)..200}"
+                by simp
+              then have ?thesis using a assms(3) 
+                by auto}
+            moreover { assume a: "n = 101"
+              then have "?b \<in> {(101::int)..202}"
+                by simp
+              then have ?thesis using a assms(3) 
+                by auto}
+            moreover { assume a: "n = 102"
+              then have "?b \<in> {(102::int)..202}"
+                by simp
+              then have ?thesis using a assms(3) 
+                by auto}
+            moreover { assume a: "n = 103"
+              then have "?b \<in> {(103::int)..206}"
+                by simp
+              then have ?thesis using a assms(3) 
+                by auto}
+            moreover { assume a: "n = 104"
+              then have "?b \<in> {(104::int)..208}"
+                by simp
+              then have ?thesis using a assms(3) 
+                by auto}
+            moreover { assume a : "n = 105"
+              then have "?b \<in> {(105::int)..210}"
+                by simp
+              then have ?thesis using a assms(3) 
+                by auto}
+            moreover {assume a: "n = 106"
+              then have "?b \<in> {(106::int)..212}"
+                by simp
+              then have ?thesis using a assms(3) 
+                by auto}
+            ultimately show ?thesis using asm
+              by fastforce
+          qed
+          have c: "?c \<in> cards"
+          proof - 
+            show ?thesis sorry
+          qed
+          show ?thesis using a b c
+            by blast
+        qed
+      have aps: "((perfect_square (?a + ?b)) \<and> (perfect_square (?a + ?c)) \<and> (perfect_square (?c + ?b)))"
+      proof - 
+        have a1: "perfect_square (?a + ?b)"
+        proof - 
+          have a1: "?a + ?b = 17^2"
+            by auto
+          then  show ?thesis
+            by (metis perfect_square_def power2_eq_square)
+        qed
+        have a2: "(perfect_square (?a + ?c))"
+        proof - 
+          have "?a + ?c = 18^2"
+            by simp
+          then show ?thesis unfolding perfect_square_def
+            by (metis power2_eq_square) 
+        qed
+        have a3: "(perfect_square (?c + ?b))"
+        proof - 
+          have "?c + ?b = 19^2"
+            by simp
+          then show ?thesis unfolding perfect_square_def 
+            by (metis power2_eq_square)
+        qed
+        show ?thesis using a1 a2 a3 by presburger
+      qed
+      then have ?thesis using aneq aps amemb 
+        by blast}
     moreover {assume gt: "n \<ge> 107"
       have "\<exists> e::int. (2 * e * (e - 2) \<ge> n \<and> 2 * e * (e + 2) \<le> 2 * n) \<and> (2 * e^2 + 1 < 2 * n \<and> 2 * e^2 + 1 > n) \<and> e > 1"
         using equation_simp
