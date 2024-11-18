@@ -305,14 +305,18 @@ proof -
             using atLeastAtMost_iff by blast 
         qed
         have bmemb: "?b \<in> {n..2*n}"
-        proof - 
-          show ?thesis sorry
-        qed
+          using e_literal
+          by (meson atLeastAtMost_iff order_less_le) 
         have cmemb: "?c \<in> {n..2*n}"
-        proof - 
-          show ?thesis sorry
-        qed
-        then show ?thesis using amemb bmemb cmemb assms(3)
+        proof -
+          have a1: "?b > ?a" using egt1
+              by (simp add: power2_eq_square)
+          have "?c > ?b"
+            by (smt (verit, best) egt1 less_1_mult power2_diff right_diff_distrib)
+          then show ?thesis using a1
+            using atLeastAtMost_iff e_literal less_le_not_le order_trans by auto
+          qed
+          then show ?thesis using amemb bmemb cmemb assms(3)
           by meson
       qed
       then have ?thesis sorry}
