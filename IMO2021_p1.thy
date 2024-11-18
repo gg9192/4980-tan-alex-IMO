@@ -1,7 +1,5 @@
 theory IMO2021_p1
   imports Complex_Main
-
-
 begin
 
 definition perfect_square :: "int \<Rightarrow> bool" where
@@ -14,14 +12,32 @@ lemma sqrt_sqr:
   by (simp add: assms)
 
 
-lemma equation_simp:
+
+lemma diff_at_least_one_exist_int:
+  fixes a b::real
+  assumes "a > b"
+  shows "a - b \<ge> 1 \<Longrightarrow> (\<exists>e::int. e \<ge> b \<and> e \<le> a)"
+proof -
+  assume "a - b \<ge> 1"
+  then have "a \<ge> b + 1" 
+    by simp
+  then have "a \<ge> b + 1" 
+    by simp
+  then have blt: "b \<le> floor a"
+    using assms
+    by linarith
+  then have flalte: "floor a \<le> a" 
+    by (simp add: floor_less_iff)
+  then show  "(\<exists>e::int. b \<le> e \<and> e \<le> a)" using blt flalte
+    by blast 
+qed
+
+lemma simplify:
   fixes n:: int
   assumes "n \<ge> 107"
-  shows "\<exists> e::int. (2 * e * (e - 2) \<ge> n \<and> 2 * e * (e + 2) \<le> 2 * n)"
-  using assms
-proof -
-  fix e::int
-  have "sqrt (1 + n) - sqrt (1 + (n/2)::real ) -2 \<ge> 1"
+  shows "sqrt (1 + n) - sqrt (1 + (n/2)::real ) -2 \<ge> 1"
+proof - 
+  have simplify: "sqrt (1 + n) - sqrt (1 + (n/2)::real ) -2 \<ge> 1"
   proof -
     have "n \<ge> 107 \<Longrightarrow> n^2 - 108 * n + 180 \<ge> 0"
     proof - 
@@ -139,7 +155,95 @@ proof -
   then show ?thesis
     by argo      
 qed
+  then show ?thesis by auto
+qed
 
+lemma equation_simp:
+  fixes n:: int
+  assumes "n \<ge> 107"
+  shows "\<exists> e::int. (2 * e * (e - 2) \<ge> n \<and> 2 * e * (e + 2) \<le> 2 * n) \<and> (2 * e^2 + 1 < 2 * n \<and> 2 * e^2 + 1 > n)"
+  using assms
+proof -
+
+  have "sqrt (1 + n) - 1 - (sqrt (1 + (n/2) + 1)) \<ge> 1" using simplify
+    by (smt (verit) assms field_sum_of_halves of_int_1 of_int_power_le_of_int_cancel_iff one_power2 real_sqrt_one sqrt_add_le_add_sqrt)
+  let ?upper_bound = "sqrt (1 + n) - 1"
+  let ?lower_bound = "sqrt (1 + (n / 2)) + 1"
+  have "\<exists>e::int. e \<ge> ?lower_bound \<and> e \<le> ?upper_bound"
+  proof - 
+    have p1: "?lower_bound < ?upper_bound" using assms
+      using simplify[of "n"] by argo     
+    show ?thesis using diff_at_least_one_exist_int p1 simplify[of "n"] assms
+      by auto
+  qed
+  then obtain e::int where e_fact: "e \<ge> ?lower_bound \<and> e \<le> ?upper_bound"
+    by blast
+  have a1: "n \<le> 2 * e * (e - 2)"
+  proof -
+    have "sqrt (1 +  (n / 2)) + 1 \<le> e" using e_fact
+      by auto
+    then have c1: "sqrt (1 +  (n / 2)) \<le> e - 1"
+      by force
+    then have "1 +  (n / 2) \<le> e^2 - 2 * e + 1"
+    proof -
+      have d1: "(e - 1) ^ 2 =  e^2 - 2 * e + 1"
+        by algebra
+      have d2: "(sqrt (1 + real_of_int n / 2))^2 = (1 + real_of_int n / 2)"
+        using assms by auto
+      then show ?thesis using c1 d1 d2
+        by (metis of_int_power_eq_of_int_cancel_iff sqrt_le_D)
+    qed
+    then have "(n / 2) \<le> e^2 - 2 * e"
+      by simp
+    then have "n \<le> 2 * e^2 - 4 * e"
+      by linarith
+    then have "n <= 2 * (e^2 - 2 * e)"
+      by presburger
+    then show ?thesis
+      by (metis left_diff_distrib mult.commute mult.left_commute power2_eq_square) 
+  qed
+  have a2: " e * (e + 2) \<le>  n"
+  proof - 
+    have "e \<le> sqrt (1 + n) - 1" using e_fact
+      by auto
+    then have c1: "e + 1 \<le> sqrt (1 + n)"
+      by simp
+    then have "e^2 + 2 * e + 1 \<le> 1 + n"
+    proof - 
+      have a1: "(e + 1)^2 = e^2 + 2 * e + 1"
+        by (simp add: comm_semiring_class.distrib power2_eq_square ring_class.ring_distribs(1))
+      have a2: "1 + n = (sqrt (1 + n))^2"
+        using assms by auto
+      have a3: "(1 + e)^2 \<le> (sqrt (1 + n))^2" using c1 assms
+        by (smt (verit, best) a2 e_fact field_sum_of_halves of_int_0_le_iff of_int_eq_of_int_power_cancel_iff real_less_lsqrt real_sqrt_ge_zero)
+        
+      show ?thesis using a1 a2 a3
+        by (metis add.commute of_int_le_iff)
+    qed
+    then show ?thesis
+      by (simp add: distrib_left power2_eq_square)
+  qed
+  have egt1: "e > 1"
+    by (smt (verit, ccfv_SIG) assms e_fact field_sum_of_halves of_int_1_less_iff real_sqrt_le_iff real_sqrt_one)
+  then have "2 * e * (e - 2) <  2 * e\<^sup>2 + 1 \<and> 2 * e\<^sup>2 + 1 < 2 * e * (e + 2)"
+  proof - 
+    have a1: "2 * e * (e - 2) <  2 * e\<^sup>2 + 1"
+    proof -
+      have "-4 * e < 1"
+        using egt1 by linarith
+      then have "2 * e ^2 - 4 * e < 2 * e^2 + 1"
+        by simp
+      then show ?thesis
+        by (smt (z3) int_distrib(3) mult_less_cancel_left power2_diff)
+    qed
+    have a2: " 2 * e\<^sup>2 + 1 < 2 * e * (e + 2)"
+      by (smt (z3) egt1 mult_less_cancel_left one_power2 power2_diff right_diff_distrib)
+    show ?thesis using a1 a2
+      by meson
+  qed
+  then show ?thesis using a1 a2 egt1
+    by force
+qed
 
 
 lemma IMO2021_p1:
@@ -168,12 +272,80 @@ proof -
       then have ?thesis sorry}
     moreover {assume "n = 106" 
       then have ?thesis sorry}
-    moreover {assume "n \<ge> 107"
-      have "\<exists> e::int. (2 * e * (e - 2) \<ge> n \<and> 2 * e * (e + 2) \<le> 2 * n) "
-        sorry
+    moreover {assume gt: "n \<ge> 107"
+      have "\<exists> e::int. (2 * e * (e - 2) \<ge> n \<and> 2 * e * (e + 2) \<le> 2 * n) \<and> (2 * e^2 + 1 < 2 * n \<and> 2 * e^2 + 1 > n)"
+        using equation_simp
+        using gt by blast 
+      then obtain e where e_literal: "(2 * e * (e - 2) \<ge> n \<and> 2 * e * (e + 2) \<le> 2 * n) \<and> (2 * e^2 + 1 < 2 * n \<and> 2 * e^2 + 1 > n)"
+        by blast
+      let ?a = "(2 * e * (e - 2))"
+      let ?b = "2 * e^2 + 1"
+      let ?c = "(2 * e * (e + 2))"
+      have member: "?a \<in> cards \<and> ?b \<in> cards \<and> ?c \<in> cards" using e_literal
+      proof -
+        let ?upper_bound = "sqrt (1 + n) - 1"
+        let ?lower_bound = "sqrt (1 + (n / 2)) + 1"
+        have egt1: "e>1"
+        proof - 
+          have " e \<ge> ?lower_bound \<and> e \<le> ?upper_bound"
+            proof - 
+              have p1: "e \<le> ?upper_bound"
+              proof -
+                have "2 * e * (e + 2) \<le> 2 * n" using e_literal
+                  by blast
+                then have "e * (e + 2) \<le> n"
+                  by simp
+                then have "e^2 + 2*e \<le> n"
+                  by (metis distrib_right mult.commute power2_eq_square)
+                then have "e^2 + 2 * e + 1 \<le> n + 1"
+                  by auto
+                then have "(e + 1)^2 \<le> n + 1"
+                  by (simp add: distrib_left mult.commute power2_eq_square)
+                then have "e + 1 \<le> sqrt (n + 1)" using assms(2)
+                  using of_int_le_of_int_power_cancel_iff real_le_rsqrt by blast
+                then have "e \<le> sqrt (n + 1) - 1" 
+                  by auto
+                then show ?thesis
+                  by (simp add: add.commute)  
+              qed
+              have p2: "e \<ge> ?lower_bound" sorry
+              show ?thesis using p1 p2
+                using gt simplify
+                by blast
+            qed
+          then show ?thesis using assms
+            by (smt (verit) field_sum_of_halves of_int_1_less_iff one_power2 sqrt_le_D)
+       qed
+        have amemb:"?a \<in> {n..2*n}" using e_literal
+        proof -
+          have lower: "?a \<ge> n"
+            using e_literal by blast
+          have upper: "?a \<le> 2*n"
+          proof -
+            have "?b > ?a" using egt1
+              by (simp add: power2_eq_square)
+            have "?c > ?b"
+              by (smt (verit, best) egt1 less_1_mult power2_diff right_diff_distrib)
+            then show ?thesis sorry
+          qed
+          show ?thesis using lower upper
+            using atLeastAtMost_iff by blast 
+        qed
+        have bmemb: "?b \<in> {n..2*n}"
+        proof - 
+          show ?thesis sorry
+        qed
+        have cmemb: "?c \<in> {n..2*n}"
+        proof - 
+          show ?thesis sorry
+        qed
+        then show ?thesis using amemb bmemb cmemb assms(3)
+          by meson
+      qed
       then have ?thesis sorry}
     ultimately show ?thesis
-    using assms(1) by fastforce 
+    using assms(1)
+    by fastforce
   qed
   then show ?thesis
     by (metis Un_iff assms(4))
