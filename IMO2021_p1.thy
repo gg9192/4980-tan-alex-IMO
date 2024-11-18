@@ -319,7 +319,26 @@ proof -
           then show ?thesis using amemb bmemb cmemb assms(3)
           by meson
       qed
-      then have ?thesis sorry}
+      have aps: "perfect_square (?a + ?b) \<and> perfect_square (?a + ?c) \<and> perfect_square (?c + ?b) \<and> perfect_square (?a + ?c)"
+        sorry
+      have aneq: "?a \<noteq> ?b \<and> ?a \<noteq> ?c \<and> ?b \<noteq> ?c \<and> ?a \<noteq> ?c"
+      proof - 
+        have a1: "?a \<noteq> ?b"
+        proof - 
+          have a1: "?b > ?a" using egt1
+            by (simp add: power2_eq_square)
+          then show ?thesis
+            by force
+        qed
+        have a2: "?a \<noteq> ?c"
+          using e_literal by auto
+        have a3: "?b \<noteq> ?c"
+          by (smt (z3) e_literal less_1_mult power2_diff right_diff_distrib)
+        show ?thesis using a1 a2 a3
+          by blast 
+      qed
+      then have ?thesis using member aps aneq
+        by blast}
     ultimately show ?thesis
     using assms(1)
     by fastforce
