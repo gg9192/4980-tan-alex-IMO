@@ -161,7 +161,7 @@ qed
 lemma equation_simp:
   fixes n:: int
   assumes "n \<ge> 107"
-  shows "\<exists> e::int. (2 * e * (e - 2) \<ge> n \<and> 2 * e * (e + 2) \<le> 2 * n) \<and> (2 * e^2 + 1 < 2 * n \<and> 2 * e^2 + 1 > n)"
+  shows "\<exists> e::int. (2 * e * (e - 2) \<ge> n \<and> 2 * e * (e + 2) \<le> 2 * n) \<and> (2 * e^2 + 1 < 2 * n \<and> 2 * e^2 + 1 > n) \<and> e > 1"
   using assms
 proof -
 
@@ -224,7 +224,8 @@ proof -
       by (simp add: distrib_left power2_eq_square)
   qed
   have egt1: "e > 1"
-    by (smt (verit, ccfv_SIG) assms e_fact field_sum_of_halves of_int_1_less_iff real_sqrt_le_iff real_sqrt_one)
+    using assms e_fact
+    by (smt (verit, ccfv_SIG)  field_sum_of_halves of_int_1_less_iff real_sqrt_le_iff real_sqrt_one)
   then have "2 * e * (e - 2) <  2 * e\<^sup>2 + 1 \<and> 2 * e\<^sup>2 + 1 < 2 * e * (e + 2)"
   proof - 
     have a1: "2 * e * (e - 2) <  2 * e\<^sup>2 + 1"
@@ -273,60 +274,32 @@ proof -
     moreover {assume "n = 106" 
       then have ?thesis sorry}
     moreover {assume gt: "n \<ge> 107"
-      have "\<exists> e::int. (2 * e * (e - 2) \<ge> n \<and> 2 * e * (e + 2) \<le> 2 * n) \<and> (2 * e^2 + 1 < 2 * n \<and> 2 * e^2 + 1 > n)"
+      have "\<exists> e::int. (2 * e * (e - 2) \<ge> n \<and> 2 * e * (e + 2) \<le> 2 * n) \<and> (2 * e^2 + 1 < 2 * n \<and> 2 * e^2 + 1 > n) \<and> e > 1"
         using equation_simp
         using gt by blast 
-      then obtain e where e_literal: "(2 * e * (e - 2) \<ge> n \<and> 2 * e * (e + 2) \<le> 2 * n) \<and> (2 * e^2 + 1 < 2 * n \<and> 2 * e^2 + 1 > n)"
+      then obtain e where e_literal: "(2 * e * (e - 2) \<ge> n \<and> 2 * e * (e + 2) \<le> 2 * n) \<and> (2 * e^2 + 1 < 2 * n \<and> 2 * e^2 + 1 > n) \<and> e > 1"
         by blast
       let ?a = "(2 * e * (e - 2))"
       let ?b = "2 * e^2 + 1"
       let ?c = "(2 * e * (e + 2))"
+      have egt1: "e > 1" using e_literal
+        by blast
       have member: "?a \<in> cards \<and> ?b \<in> cards \<and> ?c \<in> cards" using e_literal
       proof -
         let ?upper_bound = "sqrt (1 + n) - 1"
         let ?lower_bound = "sqrt (1 + (n / 2)) + 1"
-        have egt1: "e>1"
-        proof - 
-          have " e \<ge> ?lower_bound \<and> e \<le> ?upper_bound"
-            proof - 
-              have p1: "e \<le> ?upper_bound"
-              proof -
-                have "2 * e * (e + 2) \<le> 2 * n" using e_literal
-                  by blast
-                then have "e * (e + 2) \<le> n"
-                  by simp
-                then have "e^2 + 2*e \<le> n"
-                  by (metis distrib_right mult.commute power2_eq_square)
-                then have "e^2 + 2 * e + 1 \<le> n + 1"
-                  by auto
-                then have "(e + 1)^2 \<le> n + 1"
-                  by (simp add: distrib_left mult.commute power2_eq_square)
-                then have "e + 1 \<le> sqrt (n + 1)" using assms(2)
-                  using of_int_le_of_int_power_cancel_iff real_le_rsqrt by blast
-                then have "e \<le> sqrt (n + 1) - 1" 
-                  by auto
-                then show ?thesis
-                  by (simp add: add.commute)  
-              qed
-              have p2: "e \<ge> ?lower_bound" sorry
-              show ?thesis using p1 p2
-                using gt simplify
-                by blast
-            qed
-          then show ?thesis using assms
-            by (smt (verit) field_sum_of_halves of_int_1_less_iff one_power2 sqrt_le_D)
-       qed
         have amemb:"?a \<in> {n..2*n}" using e_literal
         proof -
           have lower: "?a \<ge> n"
             using e_literal by blast
           have upper: "?a \<le> 2*n"
           proof -
-            have "?b > ?a" using egt1
+            have a1: "?b > ?a" using egt1
               by (simp add: power2_eq_square)
             have "?c > ?b"
               by (smt (verit, best) egt1 less_1_mult power2_diff right_diff_distrib)
-            then show ?thesis sorry
+            then show ?thesis using a1
+              using e_literal by linarith 
           qed
           show ?thesis using lower upper
             using atLeastAtMost_iff by blast 
