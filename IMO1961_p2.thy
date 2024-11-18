@@ -4,17 +4,20 @@ begin
 section "proof"
 
 lemma diff_of_squares:
+  (* shows the basic algebra for difference of squares *)
   fixes a b::real
   shows "(a-b)*(a+b) = a^2 - b^2 "
   by (simp add: power2_eq_square square_diff_square_factored)
 
 lemma neq_squares:
+  (* shows that if a and b are positive non 0, then a^2 != b^2 *)
   fixes a b:: real
   assumes "a > 0" "b > 0" "a \<noteq> b"
   shows "a^2 \<noteq> b^2"
   using assms(1) assms(2) assms(3) by auto
 
 lemma IMO1961p2:
+  (* formalizes part a using heron's formula*)
   fixes A B C :: "real ^ 2"
   assumes "A \<noteq> B"
   assumes "C \<noteq> B"
@@ -151,6 +154,7 @@ qed
 section "equality"  
 
 lemma IMO1961p2_eq:
+  (* does the second problem. Shows that the only time when equality holds is triangle with all sides matching*)
   fixes A B C :: "real ^ 2"
   assumes "A \<noteq> B"
   assumes "C \<noteq> B"
