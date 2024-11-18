@@ -319,8 +319,66 @@ proof -
           then show ?thesis using amemb bmemb cmemb assms(3)
           by meson
       qed
-      have aps: "perfect_square (?a + ?b) \<and> perfect_square (?a + ?c) \<and> perfect_square (?c + ?b) \<and> perfect_square (?a + ?c)"
-        sorry
+      have aps: "perfect_square (?a + ?b) \<and> perfect_square (?a + ?c) \<and> perfect_square (?c + ?b)"
+      proof - 
+        have ps1: "perfect_square (?a + ?b)"
+        proof - 
+          have "?a + ?b = (2*e - 1)^2"
+          proof -
+            have "(2*e - 1)^2 = 2 * e * 2 * e - 2 * e - 2 * e + 1"
+              by algebra
+            then have "(2*e - 1)^2 = 4 * e^2 - 4 * e + 1"
+              by (simp add: power2_diff)
+            then have "(2*e - 1)^2 = 2 * e^2  + 2 * e^2 - 4 * e + 1"
+              by simp
+            then have d1: "(2*e - 1)^2 = 2 * e^2 - 4 * e + 2 * e^2+ 1"
+              by presburger
+            have "2 * e^2 - 4 * e = 2 * e * ( e - 2)"
+            proof - 
+              have a1: "2 * e^2 - 4 * e = e * (2 * e - 4)"
+                by algebra
+              then have "e * (2 * e - 4) = 2 * e * (e - 2)"
+                by auto
+              then show ?thesis using a1 
+                by auto
+            qed
+            then show ?thesis using d1
+              by presburger
+          qed
+          then show ?thesis unfolding perfect_square_def
+            using power2_eq_square by auto 
+          qed
+        have ps2: "perfect_square (?a + ?c)"
+        proof -
+          have "?a + ?c = 4 * e ^2"
+          proof -
+            have a1: "2 * e * (e - 2) + 2 * e * (e + 2) = 2 * e ^ 2 + 2 * e + 2 * e ^ 2 - 2 * e" 
+              by algebra
+            have a2: " 2 * e ^ 2 + 2 * e + 2 * e ^ 2 - 2 * e = 2 * e^2 + 2 * e^2"
+              by presburger
+            show ?thesis using a1 a2 try0
+              by fastforce
+          qed
+          then show ?thesis unfolding perfect_square_def
+            by (smt (z3) distrib_left)
+        qed
+        have ps3: "perfect_square (?c + ?b)"
+        proof -
+          have "?c + ?b = (2 * e + 1)^2"
+          proof -
+            have a1: " 2 * e * (e + 2) + (2 * e\<^sup>2 + 1) = 2 * e^2 + 4 * e + 2 * e^2 + 1"
+              by algebra
+            have a2: "2 * e^2 + 4 * e + 2 * e^2 + 1 = 4 * e^2 + 4 * e + 1"
+              by auto
+            then show ?thesis using a1 a2
+              by (simp add: distrib_left mult.commute power2_eq_square)
+          qed
+          then show ?thesis unfolding perfect_square_def
+            power2_eq_square by auto
+        qed
+        show ?thesis using ps1 ps2 ps3
+          by blast
+      qed
       have aneq: "?a \<noteq> ?b \<and> ?a \<noteq> ?c \<and> ?b \<noteq> ?c \<and> ?a \<noteq> ?c"
       proof - 
         have a1: "?a \<noteq> ?b"
