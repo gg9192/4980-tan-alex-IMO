@@ -1,7 +1,7 @@
 theory IMO1961_p2
   imports "HOL-Analysis.Simplex_Content"
 begin         
-section "proof"
+section "helper lemmas"
 
 lemma diff_of_squares:
   (* shows the basic algebra for difference of squares *)
@@ -15,6 +15,8 @@ lemma neq_squares:
   assumes "a > 0" "b > 0" "a \<noteq> b"
   shows "a^2 \<noteq> b^2"
   using assms(1) assms(2) assms(3) by auto
+
+section "proof for part a"
 
 lemma IMO1961p2:
   (* formalizes part a using heron's formula*)
@@ -151,7 +153,7 @@ proof -
   qed
 qed
 
-section "equality"  
+section "proof for part b"  
 
 lemma IMO1961p2_eq:
   (* does the second problem. Shows that the only time when equality holds is triangle with all sides matching*)
@@ -459,7 +461,5 @@ proof -
   ultimately show ?thesis 
     by fastforce  
 qed
-
-
 
 end

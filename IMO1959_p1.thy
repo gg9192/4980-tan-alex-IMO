@@ -2,18 +2,25 @@ theory IMO1959_p1
   imports "HOL-Computational_Algebra.Euclidean_Algorithm"
 begin         
 
+section "helper lemmas"
+
 lemma frac_gcd:
+  (* this shows that the greatest common divisor between a and a*2 + 1 is 1*)
   fixes a b :: nat
   shows "(gcd a (2 * a + 1)) = 1"
   by (metis gcd_1_nat gcd_add_mult)
 
 lemma euclidian_one_step:
+  (* this does one iteration of the euclidian algorithm*)
   fixes a b :: nat
   assumes "a > b"
   shows "gcd (a) (b) = gcd (a-b) (b)"
   by (simp add: assms gcd_diff1_nat order_less_imp_le)
-  
+
+section "proof for the problem"
+
 lemma IMO1959_p1:
+  (* this formalizes the problem using gcd rather than fractions*)
   fixes n::nat
   shows "gcd (21 * n + 4) (14 * n + 3) = 1"
 proof -

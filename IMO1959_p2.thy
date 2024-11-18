@@ -2,12 +2,15 @@ theory IMO1959_p2
   imports "HOL-Computational_Algebra.Euclidean_Algorithm" "HOL.Real"  "HOL.NthRoot"
 begin         
 
+section "helper lemmas"
+
 lemma sqrt_abs:
   fixes x::real
   shows "sqrt (x^2) = abs x"
   using real_sqrt_abs by blast
 
 lemma eq_simp:
+  (* this lemma handles all the messy algebra that all three parts rely on. *)
   fixes x::real
   assumes "sqrt (x + sqrt (2 * x - 1)) + sqrt (x - sqrt (2 * x - 1)) = A"
   assumes "2 * x - 1 \<ge> 0"
@@ -50,11 +53,11 @@ proof -
   then show ?thesis by auto
 qed
 
-
 subsection "part a"
 
-
 lemma IMO1959_p2_a:
+  (* this is part a of the problem. We use implication to show that as long as x in in a certain range
+  then the equation =/!= some value *)
   fixes x::real
   assumes "2 * x - 1 \<ge> 0"
   assumes "x - sqrt (2 * x - 1) \<ge> 0"
@@ -74,6 +77,8 @@ qed
 subsection "part b"
 
 lemma IMO1959_p2_b:
+  (* this is part b of the problem. We use implication to show that as long as x in in a certain range
+  then the equation =/!= some value *)
   fixes x::real
   assumes "2 * x - 1 \<ge> 0"
   assumes "x - sqrt (2 * x - 1) \<ge> 0"
@@ -95,6 +100,8 @@ qed
 subsection "part c"
 
 lemma IMO1959_p2_c:
+  (* this is part c of the problem. We use implication to show that as long as x in in a certain range
+  then the equation =/!= some value *)
   fixes x::real
   assumes "2 * x - 1 \<ge> 0"
   assumes "x - sqrt (2 * x - 1) \<ge> 0"
