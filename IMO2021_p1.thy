@@ -347,7 +347,42 @@ proof -
           qed
           have c: "?c \<in> cards"
           proof - 
-            show ?thesis sorry
+            {assume a: "n = 100"
+              then have "?c \<in> {(100::int)..200}"
+                by simp
+              then have ?thesis using a assms(3) 
+                by auto}
+            moreover {assume a: "n = 101"
+              then have "?c \<in> {(101::int)..202}"
+                by simp
+              then have ?thesis using a assms(3) 
+                by auto}
+            moreover {assume a: "n = 102"
+              then have "?c \<in> {(102::int)..204}"
+                by simp
+              then have ?thesis using a assms(3) 
+                by auto}
+            moreover {assume a: "n = 103"
+              then have "?c \<in> {(103::int)..206}"
+                by simp 
+              then have ?thesis using a assms(3) 
+                by auto}
+            moreover {assume a: "n = 104"
+              then have "?c \<in> {(104::int)..208}"
+                by simp
+              then have ?thesis using a assms(3) 
+                by auto}
+            moreover {assume a: "n = 105"
+              then have "?c \<in> {(105::int)..210}"
+                by simp
+              then have ?thesis using a assms(3) 
+                by auto}
+            moreover {assume a : "n = 106"
+              then have "?c \<in> {(106::int)..212}"
+                by simp
+              then have ?thesis using a assms(3) 
+                by auto}
+            ultimately show ?thesis using asm by force
           qed
           show ?thesis using a b c
             by blast
