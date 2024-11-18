@@ -19,4 +19,4 @@ def gen_triples(n):
                 
 for i in range(100,107):
     print(gen_triples(i))
-    
+    # found that (126, 163, 198) works for all

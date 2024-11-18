@@ -5,7 +5,9 @@ begin
 definition perfect_square :: "int \<Rightarrow> bool" where
   "perfect_square n \<longleftrightarrow> (\<exists>k. n = k * k)"
 
-lemma sqrt_sqr:
+lemma sqrt_sqr: 
+  (* my sledgehammer has issues with square roots, this is here to use in the cases 
+  that sledgehammer fails *)
   fixes x::real
   assumes "x \<ge> 0"
   shows "sqrt (x^2) = x"
@@ -14,13 +16,12 @@ lemma sqrt_sqr:
 
 
 lemma diff_at_least_one_exist_int:
+  (*shows that there exists an int in between 2 numbers if the distance between them is at least 1 *)
   fixes a b::real
   assumes "a > b"
   shows "a - b \<ge> 1 \<Longrightarrow> (\<exists>e::int. e \<ge> b \<and> e \<le> a)"
 proof -
   assume "a - b \<ge> 1"
-  then have "a \<ge> b + 1" 
-    by simp
   then have "a \<ge> b + 1" 
     by simp
   then have blt: "b \<le> floor a"
@@ -33,9 +34,11 @@ proof -
 qed
 
 lemma simplify:
+  (* does all the algebra in the second half of the proof in a bottom up way
+  I solved sqrt (1 + n) - sqrt (1 + (n/2)::real ) - 2 \<ge> 1 for n on paper first *)
   fixes n:: int
   assumes "n \<ge> 107"
-  shows "sqrt (1 + n) - sqrt (1 + (n/2)::real ) -2 \<ge> 1"
+  shows "sqrt (1 + n) - sqrt (1 + (n/2)::real ) - 2 \<ge> 1"
 proof - 
   have simplify: "sqrt (1 + n) - sqrt (1 + (n/2)::real ) -2 \<ge> 1"
   proof -
@@ -154,17 +157,18 @@ proof -
     by simp
   then show ?thesis
     by argo      
-qed
+  qed
   then show ?thesis by auto
 qed
 
 lemma equation_simp:
+  (* proves that there exists an e such that 3 integers of those forms exist, and that they are all in cards*)
   fixes n:: int
   assumes "n \<ge> 107"
-  shows "\<exists> e::int. (2 * e * (e - 2) \<ge> n \<and> 2 * e * (e + 2) \<le> 2 * n) \<and> (2 * e^2 + 1 < 2 * n \<and> 2 * e^2 + 1 > n) \<and> e > 1"
+  shows "\<exists> e::int. (2 * e * (e - 2) \<ge> n \<and> 2 * e * (e + 2) \<le> 2 * n) \<and> (2 * e^2 + 1 < 2 * n \<and> 2 * e^2 + 1 > n) \<and> e > 1" 
+  (* the e>1 was proven using sledgehammer, and we include it in the shows statement to pass that fact down*)
   using assms
 proof -
-
   have "sqrt (1 + n) - 1 - (sqrt (1 + (n/2) + 1)) \<ge> 1" using simplify
     by (smt (verit) assms field_sum_of_halves of_int_1 of_int_power_le_of_int_cancel_iff one_power2 real_sqrt_one sqrt_add_le_add_sqrt)
   let ?upper_bound = "sqrt (1 + n) - 1"
@@ -216,7 +220,6 @@ proof -
         using assms by auto
       have a3: "(1 + e)^2 \<le> (sqrt (1 + n))^2" using c1 assms
         by (smt (verit, best) a2 e_fact field_sum_of_halves of_int_0_le_iff of_int_eq_of_int_power_cancel_iff real_less_lsqrt real_sqrt_ge_zero)
-        
       show ?thesis using a1 a2 a3
         by (metis add.commute of_int_le_iff)
     qed
@@ -259,7 +262,8 @@ lemma IMO2021_p1:
 proof - 
   have ex_3: "\<exists> a b c::int. (a \<noteq> b \<and> a \<noteq> c \<and> b \<noteq> c \<and> a \<noteq> c) \<and> (a \<in> cards \<and> b \<in> cards \<and> c \<in> cards) \<and> ((perfect_square (a + b)) \<and> (perfect_square (a + c)) \<and> (perfect_square (c + b)) \<and> (perfect_square (a + c)) ) "
   proof - 
-    {assume asm: "n \<ge>100 \<and> n < 107"
+    {assume asm: "n \<ge>100 \<and> n < 107" (* for this case, we used the python script to get the triples, and we show 
+    that they work by enumerating each case *)
       let ?a = "126::int"
       let ?b = "163::int"
       let ?c = "198::int"
@@ -414,7 +418,8 @@ proof -
       qed
       then have ?thesis using aneq aps amemb 
         by blast}
-    moreover {assume gt: "n \<ge> 107"
+    moreover {assume gt: "n \<ge> 107" (* we use the helper lemma to find an e such that numbers of these forms are in the cards set
+    and that the numbers satisfy the conditions we want *)
       have "\<exists> e::int. (2 * e * (e - 2) \<ge> n \<and> 2 * e * (e + 2) \<le> 2 * n) \<and> (2 * e^2 + 1 < 2 * n \<and> 2 * e^2 + 1 > n) \<and> e > 1"
         using equation_simp
         using gt by blast 
