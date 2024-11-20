@@ -12,18 +12,17 @@ lemma diff_of_squares:
 lemma neq_squares:
   (* shows that if a and b are positive non 0, then a^2 != b^2 *)
   fixes a b:: real
-  assumes "a > 0" "b > 0" "a \<noteq> b"
-  shows "a^2 \<noteq> b^2"
-  using assms(1) assms(2) assms(3) by auto
+  assumes "a \<noteq> b"
+  shows "(a-b)^2 > 0"
+  by (simp add: assms)
+
 
 section "proof for part a"
 
 lemma IMO1961p2:
   (* formalizes part a using heron's formula*)
   fixes A B C :: "real ^ 2"
-  assumes "A \<noteq> B"
-  assumes "C \<noteq> B"
-  assumes "A \<noteq> C"
+
   assumes "a = dist B C"
   assumes "b = dist A C" 
   assumes "c = dist A B"
@@ -39,9 +38,9 @@ proof -
     show ?thesis using assms(5)
     proof -
       have f1: "s - c \<le> (a + b - c) / 2"
-        by (simp add: assms(8))
+        by (simp add: assms(5))
       have f2: "(a + b - c) / 2 \<le> s - c"
-        by (simp add: assms(8))
+        by (simp add: assms(5))
       then have f3: "(a + b - c) / 2 = s - c"
         using f1 by simp
       have f4: "(a - b + c) / 2 = s - b"
@@ -49,7 +48,7 @@ proof -
       have "(- a + b + c) / 2 = s - a"
         using f2 f1 by simp
       then show ?thesis
-        using f4 f3 assms(8) heron1 by presburger
+        using f4 f3 assms(5) heron1 by presburger
     qed
   qed 
   have factor: "S = (1/4) * sqrt ((a + b + c)*(-a + b + c)*(a - b + c)*(a + b - c))" 
@@ -158,9 +157,6 @@ section "proof for part b"
 lemma IMO1961p2_eq:
   (* does the second problem. Shows that the only time when equality holds is triangle with all sides matching*)
   fixes A B C :: "real ^ 2"
-  assumes "A \<noteq> B"
-  assumes "C \<noteq> B"
-  assumes "A \<noteq> C"
   assumes "a = dist B C"
   assumes "b = dist A C" 
   assumes "c = dist A B"
@@ -177,9 +173,9 @@ proof -
         show ?thesis using assms(5)
           proof -
             have f1: "s - c \<le> (a + b - c) / 2"
-              by (simp add: assms(8))
+              by (simp add: assms(5))
             have f2: "(a + b - c) / 2 \<le> s - c"
-              by (simp add: assms(8))
+              by (simp add: assms(5))
             then have f3: "(a + b - c) / 2 = s - c"
               using f1 by simp
             have f4: "(a - b + c) / 2 = s - b"
@@ -187,7 +183,7 @@ proof -
             have "(- a + b + c) / 2 = s - a"
               using f2 f1 by simp
             then show ?thesis
-              using f4 f3 assms(8) heron1 by presburger
+              using f4 f3 assms(5) heron1 by presburger
           qed
         qed 
     have factor: "S = (1/4) * sqrt ((a + b + c)*(-a + b + c)*(a - b + c)*(a + b - c))" 
@@ -255,8 +251,7 @@ proof -
         have h1: "sqrt (3 * 3) = 3"
           by simp
         have h2: "sqrt (b^4) = b^2"
-          by (smt (verit) assms(3) assms(5) dist_pos_lt numeral_Bit0_eq_double power_mult real_sqrt_abs real_sqrt_power)
-        
+          by (metis numeral_Bit0_eq_double pos2 power_mult real_root_pos_unique sqrt_def zero_le_power2)
         show ?thesis using h1 h2
           by presburger
       qed
@@ -271,13 +266,13 @@ proof -
     have heron:"S = sqrt (((a + b + c)/2)*((-a + b + c)/2)*((a - b + c)/2)*((a + b - c)/2))"
       proof - 
         have heron1: "S = sqrt (s * (s - a) * (s - b) * (s - c))" 
-          using heron assms(4-8) by blast
+          using heron assms(1-5) by blast
         show ?thesis using assms(5)
         proof -
           have f1: "s - c \<le> (a + b - c) / 2"
-            by (simp add: assms(8))
+            by (simp add: assms(5))
           have f2: "(a + b - c) / 2 \<le> s - c"
-            by (simp add: assms(8))
+            by (simp add: assms(5))
           then have f3: "(a + b - c) / 2 = s - c"
             using f1 by simp
           have f4: "(a - b + c) / 2 = s - b"
@@ -285,7 +280,7 @@ proof -
           have "(- a + b + c) / 2 = s - a"
             using f2 f1 by simp
           then show ?thesis
-            using f4 f3 assms(8) heron1 by presburger
+            using f4 f3 assms(5) heron1 by presburger
         qed
       qed 
     have factor: "S = (1/4) * sqrt ((a + b + c)*(-a + b + c)*(a - b + c)*(a + b - c))" 
@@ -351,15 +346,13 @@ proof -
       qed
       have gt: "?A + ?B + ?C > sqrt (6 * ?A * ?B + 6 * ?B * ?C + 6 *?C * ?A - 3 * ?A^2 - 3 * ?B ^ 2 - 3 * ?C ^ 2)"
       proof - 
-        have all_gt_0: "a > 0 \<and> b > 0 \<and> c > 0" using assms
-         by simp
         have a1: "?A^2 + ?B^2 + ?C ^2 > ?A * ?B + ?B * ?C + ?C * ?A"
         proof - 
           have aa: "((?A^2 + ?B^2)/2) + ((?B^2 + ?C^2)/2) + ((?C^2 + ?A^2)/2) > ?A * ?B + ?B * ?C + ?C * ?A"
           proof -
             {assume asm1: "a \<noteq> b \<and> b \<noteq> c \<and> a \<noteq> c"
-              have "(?A - ?B)^2 > 0" using asm1
-                by (simp add: all_gt_0 neq_squares)
+              have "(?A - ?B)^2 > 0" using asm1 neq_squares
+                by (simp add: assms(1) assms(2))
               then have "?A^2 - ?A * ?B * 2 + ?B^2 > 0"
                 by (simp add: power2_diff)
               then have "?A^2 + ?B^2 >  ?A * ?B * 2"  
@@ -373,20 +366,20 @@ proof -
                 by simp
               have f2: "((?B^2 + ?C^2)/2) > ?B * ?C"
               proof - 
-                have "(?B - ?C)^2 > 0" using asm2
-                  by (simp add: all_gt_0 neq_squares)
-                then have "?B^2 - 2*?B*?C + ?C^2 > 0"
+                have "(?B - ?C)^2 > 0" using neq_squares
+                  using asm2 assms(2) assms(3) by force
+                then have "?B ^ 2 - 2 * ?B * ?C + ?C ^ 2 > 0"
                   by (simp add: power2_diff)
                 then show ?thesis
-                  by fastforce  
+                  by simp 
               qed
               have ?thesis using f1 f2
                 by (smt (verit, del_insts) asm2 mult.commute)}
             moreover {assume asm3: "a \<noteq> b \<and> b = c \<and> a \<noteq> c"
               have eq: "(?B^2 + ?C^2)/2 = ?B * ?C" using asm3
                 by simp 
-              have "(?A - ?B)^2 > 0" using asm3
-                by (simp add: all_gt_0 neq_squares)
+              have "(?A - ?B)^2 > 0" using asm3 neq_squares
+                using assms(1) assms(2) by force
               then have "?A^2 - ?A * ?B * 2 + ?B^2 > 0"
                 by (simp add: power2_diff)
               then have "?A^2 + ?B^2 >  ?A * ?B * 2"  
@@ -394,12 +387,14 @@ proof -
               then have f1: "((?A^2 + ?B^2)/2) > ?A * ?B" using asm3
                 by simp
                have ?thesis using eq f1
-                 by (smt (verit, del_insts) asm3 mult.commute)}
+                 using asm3
+                 by (smt (verit, best) mult.commute) }
              moreover {assume asm4: "a \<noteq> b \<and> b \<noteq> c \<and> a = c"
                have eq: "(?C^2 + ?A^2)/2 = ?C * ?A" using asm4
                  by simp
-               have "(?A - ?B)^2 > 0" using asm4
-                by (simp add: all_gt_0 neq_squares)
+               have "(?A - ?B)^2 > 0" using asm4 neq_squares
+                 by (metis assms(2) assms(3) pos2 power_eq_imp_eq_base zero_le_dist)
+                 
               then have "?A^2 - ?A * ?B * 2 + ?B^2 > 0"
                 by (simp add: power2_diff)
               then have "?A^2 + ?B^2 >  ?A * ?B * 2"  
@@ -422,13 +417,13 @@ proof -
                  using asm6 by blast
                have ?thesis using eq gt
                  using asm6 by blast}
-             {assume asm7:"a \<noteq> b \<and> b = c \<and> a = c"
+             moreover {assume asm7:"a \<noteq> b \<and> b = c \<and> a = c"
                have gt: "(?A^2 + ?B^2)/2 > ?A * ?B" using asm7
                  by auto
               have ?thesis using gt
                 using asm7 by force}
-              ultimately show ?thesis
-                using a2 by blast
+            ultimately show ?thesis
+              using a2 by blast 
           qed
           have ab: "((?A^2 + ?B^2)/2) + ((?B^2 + ?C^2)/2) + ((?C^2 + ?A^2)/2) = ?A^2 + ?B^2 + ?C^2"
             by argo
@@ -455,7 +450,7 @@ proof -
           by blast
       qed
       have ?thesis using rhs_simp gt
-        using assms(7) 
+        using assms(4) 
         using calculation by argo  
   }
   ultimately show ?thesis 
