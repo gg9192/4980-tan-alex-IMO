@@ -37,7 +37,7 @@ proof -
 qed
 
 lemma cant_simp:
-  (* shows that if the gdc of the numerator and denominator are coprime, then the fraction can't be further simplified *)
+  (* shows that if the gcd of the numerator and denominator is 1 then the fraction can't be further simplified *)
   fixes a b::nat
   fixes f:: rat
   assumes "gcd a b = 1"
