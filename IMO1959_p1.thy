@@ -6,7 +6,7 @@ section "helper lemmas"
 
 lemma frac_gcd:
   (* this shows that the greatest common divisor between a and a*2 + 1 is 1*)
-  fixes a b :: nat
+  fixes a :: nat
   shows "(gcd a (2 * a + 1)) = 1"
   by (metis gcd_1_nat gcd_add_mult)
 
