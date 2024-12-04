@@ -258,7 +258,7 @@ lemma IMO2021_p1:
   assumes "p1 \<inter> p2 = {}"
   assumes "cards = {n..2*n}"
   assumes "p1 \<union> p2 = cards"
-  shows "(\<exists>a b::int. (a \<in> p1 \<and> b \<in> p1) \<and> (a \<noteq> b) \<and> (perfect_square (a + b))) \<or> (\<exists>a b::int. (a \<in> p2 \<and> b \<in> p2) \<and> (a \<noteq> b) \<and> (perfect_square (a + b))) "
+  shows "card p1 \<ge> 1 \<and> card p2 \<ge> 1 \<Longrightarrow> (\<exists>a b::int. (a \<in> p1 \<and> b \<in> p1) \<and> (a \<noteq> b) \<and> (perfect_square (a + b))) \<or> (\<exists>a b::int. (a \<in> p2 \<and> b \<in> p2) \<and> (a \<noteq> b) \<and> (perfect_square (a + b))) "
 proof - 
   have ex_3: "\<exists> a b c::int. (a \<noteq> b \<and> a \<noteq> c \<and> b \<noteq> c \<and> a \<noteq> c) \<and> (a \<in> cards \<and> b \<in> cards \<and> c \<in> cards) \<and> ((perfect_square (a + b)) \<and> (perfect_square (a + c)) \<and> (perfect_square (c + b)) \<and> (perfect_square (a + c)) ) "
   proof - 

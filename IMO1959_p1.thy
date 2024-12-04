@@ -6,12 +6,12 @@ section "helper lemmas"
 
 lemma frac_gcd:
   (* this shows that the greatest common divisor between a and a*2 + 1 is 1*)
-  fixes a b :: nat
+  fixes a :: nat
   shows "(gcd a (2 * a + 1)) = 1"
   by (metis gcd_1_nat gcd_add_mult)
 
-lemma euclidian_one_step:
-  (* this does one iteration of the euclidian algorithm*)
+lemma division_1_step:
+  (* this does one "step" of division*)
   fixes a b :: nat
   assumes "a > b"
   shows "gcd (a) (b) = gcd (a-b) (b)"
@@ -27,7 +27,7 @@ proof -
   have gt: "(21 * n + 4) > (14 * n + 3)"
     by auto
   have onestep: "gcd (21 * n + 4) (14 * n + 3) = gcd (7 * n + 1) (14 * n + 3)"
-    using euclidian_one_step[of "14 * n + 3" "21 * n + 4"] gt 
+    using division_1_step[of "14 * n + 3" "21 * n + 4"] gt 
     by fastforce
   have gcd1: "gcd (7 * n + 1) (14 * n + 3) = 1"
     using  frac_gcd
@@ -37,7 +37,7 @@ proof -
 qed
 
 lemma cant_simp:
-  (* shows that if the gdc of the numerator and denominator are coprime, then the fraction can't be further simplified *)
+  (* shows that if the gcd of the numerator and denominator is 1 then the fraction can't be further simplified *)
   fixes a b::nat
   fixes f:: rat
   assumes "gcd a b = 1"
